@@ -2,29 +2,24 @@
 #include <stdio.h>
 
 typedef struct {
-	int x;
-	int y;
+	float x;
+	float y;
 } point_2d;
 
 typedef struct {
-	int x;
-	int y;
-	int z;
+	float x;
+	float y;
+	float z;
 } point_3d;
-
-typedef struct {
-	point_2d centre;
-	int radius;
-} circle;
 
 typedef struct {
 	point_3d r0;
 	point_3d rd;
-};
+} line;
 
 typedef struct {
 	point_3d centre;
-	int radius;
+	float radius;
 } sphere;
 
 typedef struct {
@@ -36,3 +31,13 @@ typedef struct {
 typedef struct {
 	
 } box;
+
+typedef struct {
+	
+} plane;
+
+typedef struct {
+	point_3d centre;
+	float radius;
+	plane p;
+} circle;
