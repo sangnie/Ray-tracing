@@ -1,43 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include "objects.h"
 
-typedef struct {
-	float x;
-	float y;
-} point_2d;
-
-typedef struct {
-	float x;
-	float y;
-	float z;
-} point_3d;
-
-typedef struct {
-	point_3d r0;
-	point_3d rd;
-} line;
-
-typedef struct {
-	point_3d centre;
-	float radius;
-} sphere;
-
-typedef struct {
-	point_3d pt1;
-	point_3d pt2;
-	point_3d pt3;
-} triangle;
-
-typedef struct {
-	
-} box;
-
-typedef struct {
-	
-} plane;
-
-typedef struct {
-	point_3d centre;
-	float radius;
-	plane p;
-} circle;
+point_3d int_sph(line l, sphere s);
+point_3d int_tri(line l, triangle tri);
+point_3d int_box(line l, box b);
+point_3d int_plane(line l, plane p);
+point_3d int_circle(line l, circle c);
