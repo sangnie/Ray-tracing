@@ -11,61 +11,89 @@
 #define CIRCLE 5
 
 
-typedef struct {
+class Point_2d{
+	public:
 	float x;
 	float y;
-} point_2d;
+};
 
-typedef struct {
-	float x;
-	float y;
-	float z;
-} point_3d;
-
-typedef struct {
+class Point_3d{
+	public:
 	float x;
 	float y;
 	float z;
-} vector;
 
-typedef struct {
+	Point_3d(){}
+
+	Point_3d(float x, float y, float z){
+		this->x = x;
+		this->y = y;
+		this->z = z;
+	}
+
+	Point_3d subtract(Point_3d p);
+}; 
+
+class Vector{
+	public:
+	float x;
+	float y;
+	float z;
+}
+
+class Line{
+	public:
 	point_3d r0;
 	point_3d rd;
-} line;
+} 
 
-typedef struct {
+class Sphere{
+	public:
 	point_3d centre;
 	float radius;
-} sphere;
 
-typedef struct {
-	int a = 3;
-	point_3d pt1;
-	point_3d pt2;
-	point_3d pt3;
-} triangle;
+	Sphere(point_3d p, float r){
+		this->centre = p;
+		this->radius = r;
+	}
+	point_3d intersection(line l);
+	vector normal(point_3d p);
+}
 
-typedef struct {
+// class Triangle{
+// 	public:
+// 	point_3d pt1;
+// 	point_3d pt2;
+// 	point_3d pt3;
+
+// 	point_3d intersection(line l);
+// 	vector normal(point_3d p);
+// } 
+
+// // class Box{
+// public:
 	
-} box;
+// // }
 
-typedef struct {
-	float a;
-	float b;
-	float c;
-	float d;
-} plane;
+// class Plane{
+// 	public:
+// 	float a;
+// 	float b;
+// 	float c;
+// 	float d;
 
-typedef struct {
-	point_3d centre;
-	float radius;
-	plane p;
-} circle;
+// 	point_3d intersection(line l);
+// 	vector normal(point_3d p);
+// }
 
-point_3d int_sph(line l, sphere s);
-point_3d int_tri(line l, triangle tri);
-point_3d int_box(line l, box b);
-point_3d int_plane(line l, plane p);
-point_3d int_circle(line l, circle c);
+// class Circle{
+// 	public:
+// 	point_3d centre;
+// 	float radius;
+// 	plane p;
+
+// 	point_3d intersection(line l);
+// 	vector normal(point_3d p);
+// }
 
 #endif
