@@ -43,37 +43,37 @@ class Vector{
 
 class Line{
 	public:
-	point_3d r0;
-	point_3d rd;
+	Point_3d r0;
+	Point_3d rd;
 } 
 
 class Sphere{
 	public:
-	point_3d centre;
+	Point_3d centre;
 	float radius;
 
-	Sphere(point_3d p, float r){
+	Sphere(Point_3d p, float r){
 		this->centre = p;
 		this->radius = r;
 	}
-	point_3d intersection(line l);
-	vector normal(point_3d p);
+	Point_3d intersection(line l1);
+	Vector normal(Point_3d p);
 }
 
 class Triangle{
 	public:
-	point_3d pt1;
-	point_3d pt2;
-	point_3d pt3;
+	Point_3d pt1;
+	Point_3d pt2;
+	Point_3d pt3;
 
-	Triangle(point_3d p1, point_3d p2, point_3d p3){
+	Triangle(Point_3d p1, Point_3d p2, Point_3d p3){
 		this->pt1 = p1;
 		this->pt2 = p2;
 		this->pt3 = p3;
 	}
 
-	point_3d intersection(line l);
-	vector normal(point_3d p);
+	Point_3d intersection(line l1);
+	Vector normal(Point_3d p);
 } 
 
 // class Box{
@@ -95,22 +95,22 @@ class Plane{
 		this->w = w;
 	}
 
-	point_3d intersection(line l);
-	vector normal(point_3d p);
+	Point_3d intersection(line l1);
+	Vector normal(Point_3d p);
 }
 
 // class Circle{
 // 	public:
-// 	point_3d centre;
+// 	Point_3d centre;
 // 	float radius;
 // 	plane p;
 
-// 	Circle(point_3d p, float r, plane pl){
-		
+// 	Circle(Point_3d p, float r, plane pl1){
+
 // 	}
 
-// 	point_3d intersection(line l);
-// 	vector normal(point_3d p);
+// 	Point_3d intersection(line l1);
+// 	Vector normal(Point_3d p);
 // }
 
 #endif

@@ -25,7 +25,9 @@ Point_3d Point_3d::subtract(Point_3d p){
 	return p1;
 }
 
-
+Point_3d Sphere::intersection(line l){
+	
+}
 
 int main(){
 	Point_3d p1(2.0,3.0,4.0);
