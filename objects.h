@@ -12,105 +12,106 @@
 
 
 class Point_2d{
-	public:
-	float x;
-	float y;
+    public:
+    float x;
+    float y;
 };
 
 class Point_3d{
-	public:
-	float x;
-	float y;
-	float z;
+    public:
+    float x;
+    float y;
+    float z;
 
-	Point_3d(){}
+    Point_3d(){}
 
-	Point_3d(float x, float y, float z){
-		this->x = x;
-		this->y = y;
-		this->z = z;
-	}
+    Point_3d(float x, float y, float z){
+        this->x = x;
+        this->y = y;
+        this->z = z;
+    }
 
-	Point_3d subtract(Point_3d p);
+    float dot(Point_3d p);
+    Point_3d cross(Point_3d p);
+    Point_3d subtract(Point_3d p);
+    void normalize();
 }; 
 
-class Vector{
-	public:
-	float x;
-	float y;
-	float z;
-}
-
 class Line{
-	public:
-	Point_3d r0;
-	Point_3d rd;
-} 
+    public:
+    Point_3d ro;
+    Point_3d rd;
+
+    Line(Point_3d r0, Point_3d rd){
+    	this->ro = ro;
+    	this->rd = rd;
+    }
+}; 
 
 class Sphere{
-	public:
-	Point_3d centre;
-	float radius;
+    public:
+    Point_3d centre;
+    float radius;
 
-	Sphere(Point_3d p, float r){
-		this->centre = p;
-		this->radius = r;
-	}
-	Point_3d intersection(line l1);
-	Vector normal(Point_3d p);
-}
+    Sphere(Point_3d p, float r){
+        this->centre = p;
+        this->radius = r;
+    }
+    Point_3d intersection(Line l1);
+    Point_3d normal(Point_3d p);
+};
 
 class Triangle{
-	public:
-	Point_3d pt1;
-	Point_3d pt2;
-	Point_3d pt3;
+    public:
+    Point_3d pt1;
+    Point_3d pt2;
+    Point_3d pt3;
 
-	Triangle(Point_3d p1, Point_3d p2, Point_3d p3){
-		this->pt1 = p1;
-		this->pt2 = p2;
-		this->pt3 = p3;
-	}
+    Triangle(Point_3d p1, Point_3d p2, Point_3d p3){
+        this->pt1 = p1;
+        this->pt2 = p2;
+        this->pt3 = p3;
+    }
 
-	Point_3d intersection(line l1);
-	Vector normal(Point_3d p);
-} 
+    Point_3d intersection(Line l1);
+    Point_3d normal(Point_3d p);
+}; 
 
 // class Box{
 // public:
-	
+    
 // }
 
 class Plane{
-	public:
-	float a;
-	float b;
-	float c;
-	float d;
+    public:
+    float a;
+    float b;
+    float c;
+    float d;
 
-	Plane(float x, float y, float z, float w){
-		this->x = x;
-		this->y = y;
-		this->z = z;
-		this->w = w;
-	}
+    Plane(float x, float y, float z, float w){
+        this->a = x;
+        this->b = y;
+        this->c = z;
+        this->d = w;
+    }
 
-	Point_3d intersection(line l1);
-	Vector normal(Point_3d p);
-}
+    Point_3d intersection(Line l1);
+    Point_3d normal(Point_3d p);
+};
 
 // class Circle{
-// 	public:
-// 	Point_3d centre;
-// 	float radius;
-// 	plane p;
+//     public:
+//     Point_3d centre;
+//     float radius;
+//     plane p;
 
-// 	Circle(Point_3d p, float r, plane pl1){
+//     Circle(Point_3d p, float r, plane pl1){
 
-// 	}
+//     }
 
-// 	Point_3d intersection(line l1);
-// 	Vector normal(Point_3d p);
+//     Point_3d intersection(Line l1);
+//     Point_3d normal(Point_3d p);
 // }
 
 #endif
