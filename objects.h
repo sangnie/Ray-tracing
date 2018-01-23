@@ -60,37 +60,54 @@ class Sphere{
 	vector normal(point_3d p);
 }
 
-// class Triangle{
-// 	public:
-// 	point_3d pt1;
-// 	point_3d pt2;
-// 	point_3d pt3;
+class Triangle{
+	public:
+	point_3d pt1;
+	point_3d pt2;
+	point_3d pt3;
 
-// 	point_3d intersection(line l);
-// 	vector normal(point_3d p);
-// } 
+	Triangle(point_3d p1, point_3d p2, point_3d p3){
+		this->pt1 = p1;
+		this->pt2 = p2;
+		this->pt3 = p3;
+	}
 
-// // class Box{
+	point_3d intersection(line l);
+	vector normal(point_3d p);
+} 
+
+// class Box{
 // public:
 	
-// // }
-
-// class Plane{
-// 	public:
-// 	float a;
-// 	float b;
-// 	float c;
-// 	float d;
-
-// 	point_3d intersection(line l);
-// 	vector normal(point_3d p);
 // }
+
+class Plane{
+	public:
+	float a;
+	float b;
+	float c;
+	float d;
+
+	Plane(float x, float y, float z, float w){
+		this->x = x;
+		this->y = y;
+		this->z = z;
+		this->w = w;
+	}
+
+	point_3d intersection(line l);
+	vector normal(point_3d p);
+}
 
 // class Circle{
 // 	public:
 // 	point_3d centre;
 // 	float radius;
 // 	plane p;
+
+// 	Circle(point_3d p, float r, plane pl){
+		
+// 	}
 
 // 	point_3d intersection(line l);
 // 	vector normal(point_3d p);
