@@ -19,6 +19,15 @@ float Point_3d::dot(Point_3d p){
 	return this->x*p.x + this->y*p.y + this->z*p.z; 
 }
 
+Point_3d Point_3d::cross(Point_3d p)
+{
+	Point_3d cr;
+	cr.x = (this->y)*(p.z) - (this->z)*(p.y);
+	cr.y = (this->z)*(p.x) - (this->x)*(p.z);
+	cr.z = (this->x)*(p.y) - (this->y)*(p.x);
+	return cr;
+}
+
 Point_3d Sphere::intersection(Line l1){
 	Point_3d l = this->centre.subtract(l1.ro);
 
@@ -118,6 +127,55 @@ Point_3d Rectangle::intersection(Line l){
 		}	
 	}	
 }
+
+void Point_3d::normalize()
+{
+	float mag = pow((this->x),2) + pow((this->y),2) + pow((this->z),2);
+	mag = sqrt(mag);
+	this->x /= mag;
+	this->y /= mag;
+	this->z /= mag;
+}
+
+Point_3d Sphere::normal(Point_3d p)
+{
+	Point_3d nor = p.subtract(this->centre);
+	nor.normalize();
+	return nor;
+}
+
+Point_3d Triangle::normal(Point_3d p)
+{
+	Point_3d side1 = (this->pt1).subtract(this->pt3);
+	Point_3d side2 = (this->pt2).subtract(this->pt3);
+	Point_3d nor = side1.cross(side2);
+	nor.normalize();
+	return nor;
+}
+
+Point_3d Plane::normal(Point_3d p)
+{
+	Point_3d nor;
+	nor.x = this->a;
+	nor.y = this->b;
+	nor.z = this->c;
+	nor.normalize();
+	return nor;
+}
+
+Point_3d Point_3d::reflected(Point_3d normal)
+{
+	//Incident ray L calls function (as in slides)
+	Point_3d ref = normal;
+	float mult = 2 * dot(normal);
+	ref.x *= mult;
+	ref.y *= mult;
+	ref.z *= mult;
+	ref = ref.subtract(*this);
+	return ref;
+}
+
+
 
 int main(){
 	Point_3d p1(2.0,3.0,4.0);

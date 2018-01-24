@@ -35,6 +35,7 @@ class Point_3d{
     Point_3d cross(Point_3d p);
     Point_3d subtract(Point_3d p);
     void normalize();
+    Point_3d reflected(Point_3d normal);
 }; 
 
 class Line{
@@ -152,27 +153,6 @@ class Rectangle : public Object{
     Point_3d normal(Point_3d p);
 }; 
 
-class Point_source{
-	public:
-	Point_3d location;
-	float intensity;
-
-	Point_source(Point_3d p, float i){
-		this->location = p;
-		this->intensity = i;
-	}	
-};
-
-class Direction_source{
-	public:
-	Point_3d direction;
-	float intensity;
-
-	Direction_source(Point_3d p, float i){
-		this->direction = p;
-		this->intensity = i;
-	}	
-};
 // class Circle{
 //     public:
 //     Point_3d centre;
