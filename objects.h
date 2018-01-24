@@ -61,22 +61,6 @@ class Sphere{
     Point_3d normal(Point_3d p);
 };
 
-class Triangle{
-    public:
-    Point_3d pt1;
-    Point_3d pt2;
-    Point_3d pt3;
-
-    Triangle(Point_3d p1, Point_3d p2, Point_3d p3){
-        this->pt1 = p1;
-        this->pt2 = p2;
-        this->pt3 = p3;
-    }
-
-    Point_3d intersection(Line l1);
-    Point_3d normal(Point_3d p);
-}; 
-
 // class Box{
 // public:
     
@@ -89,6 +73,8 @@ class Plane{
     float c;
     float d;
 
+    Plane(){}
+
     Plane(float x, float y, float z, float w){
         this->a = x;
         this->b = y;
@@ -100,6 +86,55 @@ class Plane{
     Point_3d normal(Point_3d p);
 };
 
+class Triangle{
+    public:
+    Point_3d pt1;
+    Point_3d pt2;
+    Point_3d pt3;
+    Plane p;
+
+    Triangle(Point_3d p1, Point_3d p2, Point_3d p3){
+        this->pt1 = p1;
+        this->pt2 = p2;
+        this->pt3 = p3;
+
+        Point_3d u = p3.subtract(p1);
+        Point_3d v = p2.subtract(p1);
+        
+       	float a = u.y*v.z - u.z*v.y;
+       	float b = u.z*v.x - u.x*v.z;
+       	float c = u.x*v.y - u.y*v.x;
+       	float d = -1*(a*p1.x + b*p1.y + c*p1.z);
+
+       	Plane p(a,b,c,d);
+       	this->p = p;
+    }
+
+    Point_3d intersection(Line l1);
+    Point_3d normal(Point_3d p);
+}; 
+
+class Point_source{
+	public:
+	Point_3d location;
+	float intensity;
+
+	Point_source(Point_3d p, float i){
+		this->location = p;
+		this->intensity = i;
+	}	
+};
+
+class Direction_source{
+	public:
+	Point_3d direction;
+	float intensity;
+
+	Direction_source(Point_3d p, float i){
+		this->direction = p;
+		this->intensity = i;
+	}	
+};
 // class Circle{
 //     public:
 //     Point_3d centre;
