@@ -42,7 +42,7 @@ class Line{
     Point_3d ro;
     Point_3d rd;
 
-    Line(Point_3d r0, Point_3d rd){
+    Line(Point_3d ro, Point_3d rd){
     	this->ro = ro;
     	this->rd = rd;
     }
@@ -97,6 +97,36 @@ class Triangle{
         this->pt1 = p1;
         this->pt2 = p2;
         this->pt3 = p3;
+
+        Point_3d u = p3.subtract(p1);
+        Point_3d v = p2.subtract(p1);
+        
+       	float a = u.y*v.z - u.z*v.y;
+       	float b = u.z*v.x - u.x*v.z;
+       	float c = u.x*v.y - u.y*v.x;
+       	float d = -1*(a*p1.x + b*p1.y + c*p1.z);
+
+       	Plane p(a,b,c,d);
+       	this->p = p;
+    }
+
+    Point_3d intersection(Line l1);
+    Point_3d normal(Point_3d p);
+}; 
+
+class Rectangle{
+    public:
+    Point_3d pt1;
+    Point_3d pt2;
+    Point_3d pt3;
+    Point_3d pt4;
+    Plane p;
+
+    Rectangle(Point_3d p1, Point_3d p2, Point_3d p3, Point_3d p4){
+        this->pt1 = p1;
+        this->pt2 = p2;
+        this->pt3 = p3;
+        this->pt4 = p4;
 
         Point_3d u = p3.subtract(p1);
         Point_3d v = p2.subtract(p1);
