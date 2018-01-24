@@ -48,7 +48,15 @@ class Line{
     }
 }; 
 
-class Sphere{
+class Object{
+	public:
+	// Object(){}
+	// virtual ~Object(){}
+	virtual Point_3d intersection(Line l) =0;
+	virtual Point_3d normal(Point_3d p) =0;
+};
+
+class Sphere : public Object{
     public:
     Point_3d centre;
     float radius;
@@ -66,7 +74,7 @@ class Sphere{
     
 // }
 
-class Plane{
+class Plane : public Object{
     public:
     float a;
     float b;
@@ -86,7 +94,7 @@ class Plane{
     Point_3d normal(Point_3d p);
 };
 
-class Triangle{
+class Triangle : public Object{
     public:
     Point_3d pt1;
     Point_3d pt2;
@@ -114,7 +122,7 @@ class Triangle{
     Point_3d normal(Point_3d p);
 }; 
 
-class Rectangle{
+class Rectangle : public Object{
     public:
     Point_3d pt1;
     Point_3d pt2;
