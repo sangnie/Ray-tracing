@@ -27,6 +27,10 @@ Point_3d Point_3d::subtract(Point_3d p){
 	return p1;
 }
 
+Point_3d Point_3d::multiply(float n){
+    return(Point_3d(n*this->x, n*this->y, n*this->z));
+}
+
 float Point_3d::dot(Point_3d p){
 	return this->x*p.x + this->y*p.y + this->z*p.z; 
 }

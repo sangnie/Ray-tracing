@@ -11,8 +11,41 @@
 #define PLANE 4
 #define RECTANGLE 5
 #define LIGHT_POINT 6
+#define LIGHT_DIREC 7
 
 
+class Color
+{
+	public:
+	int r;
+	int g;
+	int b;
+	Color(){}
+	Color(int red,int green,int blue)
+	{
+		r = red;
+		g = green;
+		b = blue;
+	}
+
+	Color multiply(float c)
+	{
+		Color s;
+		s.r = this->r * c;
+		s.g = this->g * c;
+		s.b = this->b * c;
+		return s;
+	}
+
+	Color multiply(Color c)
+	{
+		Color s;
+		s.r = this->r * c.r;
+		s.g = this->g * c.g;
+		s.b = this->b * c.b;
+		return s;
+	}
+};
 
 class Point_2d{
     public:
@@ -37,6 +70,7 @@ class Point_3d{
     float dot(Point_3d p);
     Point_3d cross(Point_3d p);
     Point_3d subtract(Point_3d p);
+    Point_3d multiply(float n);
     void normalize();
     Point_3d reflected(Point_3d normal);
 
@@ -57,6 +91,9 @@ class Line{
 class Object{
 	public:
 	int type;
+	// Color intensity;
+	Color ks;
+	Color kd;
 	// Object(){}
 	// virtual ~Object(){}
 	virtual Point_3d intersection(Line l) =0;
@@ -165,53 +202,40 @@ class Rectangle : public Object{
     Point_3d normal(Point_3d p);
 }; 
 
-class Color
-{
+class Light{
 	public:
-	int r;
-	int g;
-	int b;
-	Color(){}
-	Color(int red,int green,int blue)
-	{
-		r = red;
-		g = green;
-		b = blue;
-	}
-
-	Color multiply(Color c)
-	{
-		Color s;
-		s.r = this->r * c.r;
-		s.g = this->g * c.g;
-		s.b = this->b * c.b;
-	}
+	Color intensity;
+	int type;
+	Point_3d location;
+	Point_3d direction;
 };
 
-class Point_source : public Object{
+class Point_source : public Light{
 	public:
-	Point_3d location;
-	Color intensity;
+	// Point_3d location;
+	// Color intensity;
 
-	Point_source(Point_3d p, float i){
+	Point_source(Point_3d p, Color i){
 		this->location = p;
 		this->intensity = i;
+		this->type = LIGHT_POINT;
 	}	
-	Point_3d intersection(Line l);
-    Point_3d normal(Point_3d p);
+	// Point_3d intersection(Line l);
+ 	// Point_3d normal(Point_3d p);
 };
 
-class Direction_source : public Object{
+class Direction_source : public Light{
 	public:
-	Point_3d direction;
-	Color intensity;
+	// Point_3d direction;
+	// Color intensity;
 
-	Direction_source(Point_3d p, float i){
+	Direction_source(Point_3d p, Color i){
 		this->direction = p;
 		this->intensity = i;
+		this->type = LIGHT_DIREC;
 	}	
-	Point_3d intersection(Line l);
-    Point_3d normal(Point_3d p);
+	// Point_3d intersection(Line l);
+ 	// Point_3d normal(Point_3d p);
 };
 
 
