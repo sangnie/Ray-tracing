@@ -47,19 +47,22 @@ Point_3d Sphere::intersection(Line l1){
 	// cout <<t_ca<<endl;
 
 	if(t_ca < 0){
-		cout<<"yay"<<endl;
-		throw "No intersection";
+		// cout<<"yay"<<endl;
+		throw "Behind eye";
 	} else {
 		float dsqr = l.dot(l) - t_ca*t_ca;
 		float r = this->radius;
-		cout<<"yay2"<< dsqr<< " " << sqrt(dsqr)<<" "<< r<<endl;
+		// cout<<"yay2"<< dsqr<< " " << sqrt(dsqr)<<" "<< r<<endl;
 		if(sqrt(dsqr) > r){
-			cout<<"yay3"<<endl;
+			// cout<<"yay3"<<endl;
 			throw "No intersection";
 		} else {
 			float t_hc = sqrt(r*r - dsqr);
 			float t = t_ca - t_hc;
 
+			if(t < 0.000001 && t > -0.0000001){
+				throw "intersecting at eye";
+			}
 			return Point_3d(l1.ro.x + t*l1.rd.x, l1.ro.y + t*l1.rd.y, l1.ro.z + t*l1.rd.z);
 		}
 	}
@@ -75,18 +78,20 @@ Point_3d Plane::intersection(Line l){
 
 	if(vd < 0.000001 && vd > -0.0000001){
 		// cout << "yay1" << endl;
-		throw "No intersection";
+		throw "Parallel line, No intersection";
 	} else {
 		// cout << l.ro.x << " " << l.ro.y << " " << l.ro.z << endl;
 		float v0 = a*l.ro.x + b*l.ro.y + c*l.ro.z + d;
 		float t = -1 * v0 / vd;
 		// cout << t << " " << v0 << " " << vd << endl;
-		if(t<-0.001 && !(v0 < 0.000001 && v0 > -0.0000001)){
-			//Behind eye
-			// cout << "yay2" << endl;
-			throw "No intersection";
+		if(t<-0.001){
+			throw "Behind eye";
 		} else {
-			return Point_3d(l.ro.x + t*l.rd.x, l.ro.y + t*l.rd.y, l.ro.z + t*l.rd.z);	
+			if(v0 < 0.000001 && v0 > -0.0000001){
+				throw "intersecting at eye";
+			} else {
+				return Point_3d(l.ro.x + t*l.rd.x, l.ro.y + t*l.rd.y, l.ro.z + t*l.rd.z);
+			}
 		}
 	}
 }
@@ -194,21 +199,24 @@ Point_3d Point_3d::reflected(Point_3d normal)
 	return ref;
 }
 
-int main(int argc, char const *argv[])
-{
-	Point_3d eye(0,0,0);
-	Point_3d dir(0,0,1);
-	Line l(eye,dir);
+// int main(int argc, char const *argv[])
+// {
+// 	Point_3d eye(0,0,0);
+// 	Point_3d dir(0,0,1);
+// 	Line l(eye,dir);
 
-	Triangle t(Point_3d(2,1,4), Point_3d(-2,1,4), Point_3d(0,4,4));
+// 	Triangle t(Point_3d(2,0,4), Point_3d(-2,0,4), Point_3d(0,4,4));
+// 	Rectangle r(Point_3d(2,1,4), Point_3d(-2,1,4), Point_3d(2,3,4), Point_3d(-2,3,4));
+// 	Sphere s(Point_3d(0,0,4), 4);
+// 	Plane p = t.p;
 
-	try{
-		cout << t.intersection(l) << endl;
-	} catch(const char* msg){
-		cout << msg << endl;
-	}
-	return 0;
-}
+// 	try{
+// 		cout << s.intersection(l) << endl;
+// 	} catch(const char* msg){
+// 		cout << msg << endl;
+// 	}
+// 	return 0;
+// }
 
 // int main(){
 // 	Point_3d p1(2.0,3.0,4.0);
