@@ -17,6 +17,16 @@ std::ostream& operator<<(std::ostream &strm, const Point_3d &a) {
 // 	return strm << "Plane("<< a.a << "," << a.b << "," << a.c << "," <<a.d << ")";
 // }
 
+Point_3d Point_3d::add(Point_3d p){
+	Point_3d p1;
+
+	p1.x = this->x + p.x;
+	p1.y = this->y + p.y;
+	p1.z = this->z + p.z;
+
+	return p1;
+}
+
 Point_3d Point_3d::subtract(Point_3d p){
 	Point_3d p1;
 

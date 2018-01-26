@@ -17,11 +17,11 @@
 class Color
 {
 	public:
-	int r;
-	int g;
-	int b;
+	float r;
+	float g;
+	float b;
 	Color(){}
-	Color(int red,int green,int blue)
+	Color(float red,float green,float blue)
 	{
 		r = red;
 		g = green;
@@ -43,6 +43,15 @@ class Color
 		s.r = this->r * c.r;
 		s.g = this->g * c.g;
 		s.b = this->b * c.b;
+		return s;
+	}
+
+	Color add(Color c)
+	{
+		Color s;
+		s.r = this->r + c.r;
+		s.g = this->g + c.g;
+		s.b = this->b + c.b;
 		return s;
 	}
 };
@@ -69,6 +78,7 @@ class Point_3d{
 
     float dot(Point_3d p);
     Point_3d cross(Point_3d p);
+    Point_3d add(Point_3d p);
     Point_3d subtract(Point_3d p);
     Point_3d multiply(float n);
     void normalize();
@@ -94,6 +104,8 @@ class Object{
 	// Color intensity;
 	Color ks;
 	Color kd;
+	int n_spec;
+	Color ka;
 	// Object(){}
 	// virtual ~Object(){}
 	virtual Point_3d intersection(Line l) =0;
