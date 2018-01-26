@@ -13,8 +13,33 @@ float distance(Point_3d p1, Point_3d p2){
 	return (p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y) + (p1.z - p2.z)*(p1.z - p2.z);
 }
 
-Point_3d closest_intersection(Line l, vector<Object*> objects){
-	// bool intersect = false;
+// Point_3d closest_intersection(Line l, vector<Object*> objects){
+// 	// bool intersect = false;
+// 	float min = std::numeric_limits<float>::max();
+// 	Point_3d closest = l.ro;
+
+// 	for (std::vector<Object*>::iterator it = objects.begin() ; it != objects.end(); ++it){
+// 		// cout << typeid(*it).name() << endl;
+// 		try{
+// 			// intersect = true;
+// 			Point_3d p = (*it)->intersection(l);
+// 			cout<< p <<endl;
+// 			float d = distance(l.ro,p);
+// 			if(d<min){
+// 				min = d;
+// 				closest = p;
+// 				// cout<<"yay"<<endl;
+// 			}
+// 			// cout << distance(l.ro,p)<<endl;
+// 		} catch(const char* msg){
+// 			// cout << "No intersection" << endl;
+// 		}
+// 	}
+// 	return closest;
+// }
+
+Color illumination(Line l, Vector<Object*> objects){
+
 	float min = std::numeric_limits<float>::max();
 	Point_3d closest = l.ro;
 
@@ -35,9 +60,13 @@ Point_3d closest_intersection(Line l, vector<Object*> objects){
 			// cout << "No intersection" << endl;
 		}
 	}
-	return closest;
-}
 
+	if(closest.type == LIGHT){
+		return closest.intensity;
+	}
+
+	
+}
 
 int main(){
 	Point_3d eye(0,0,0);
@@ -49,7 +78,6 @@ int main(){
 	Triangle* t = new Triangle(pt1,pt2,pt3);
 	Plane pl = t->p;
 	Sphere* s = new Sphere(pt1,0.1);
-
 
 	std::vector<Object*> objects;
 	objects.push_back(t);
