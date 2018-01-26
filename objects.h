@@ -5,11 +5,13 @@
 #include <stdio.h>
 #include <ostream>
 
-// #define SPHERE 1
-// #define TRI 2
-// #define BOX 3
-// #define PLANE 4
-// #define CIRCLE 5
+#define SPHERE 1
+#define TRIANGLE 2
+#define BOX 3
+#define PLANE 4
+#define RECTANGLE 5
+#define LIGHT_POINT 6
+
 
 
 class Point_2d{
@@ -54,6 +56,7 @@ class Line{
 
 class Object{
 	public:
+	int type;
 	// Object(){}
 	// virtual ~Object(){}
 	virtual Point_3d intersection(Line l) =0;
@@ -68,6 +71,7 @@ class Sphere : public Object{
     Sphere(Point_3d p, float r){
         this->centre = p;
         this->radius = r;
+        this->type = SPHERE;
     }
     Point_3d intersection(Line l);
     Point_3d normal(Point_3d p);
@@ -85,13 +89,16 @@ class Plane : public Object{
     float c;
     float d;
 
-    Plane(){}
+    Plane(){
+    	this->type = PLANE;
+    }
 
     Plane(float x, float y, float z, float w){
         this->a = x;
         this->b = y;
         this->c = z;
         this->d = w;
+        this->type = PLANE;
     }
 
     Point_3d intersection(Line l);
@@ -120,6 +127,7 @@ class Triangle : public Object{
 
        	Plane p(a,b,c,d);
        	this->p = p;
+       	this->type = TRIANGLE;
     }
 
     Point_3d intersection(Line l);
@@ -150,11 +158,62 @@ class Rectangle : public Object{
 
        	Plane p(a,b,c,d);
        	this->p = p;
+       	this->type = RECTANGLE;
     }
 
     Point_3d intersection(Line l);
     Point_3d normal(Point_3d p);
 }; 
+
+class Color
+{
+	public:
+	int r;
+	int g;
+	int b;
+	Color(){}
+	Color(int red,int green,int blue)
+	{
+		r = red;
+		g = green;
+		b = blue;
+	}
+
+	Color multiply(Color c)
+	{
+		Color s;
+		s.r = this->r * c.r;
+		s.g = this->g * c.g;
+		s.b = this->b * c.b;
+	}
+};
+
+class Point_source : public Object{
+	public:
+	Point_3d location;
+	Color intensity;
+
+	Point_source(Point_3d p, float i){
+		this->location = p;
+		this->intensity = i;
+	}	
+	Point_3d intersection(Line l);
+    Point_3d normal(Point_3d p);
+};
+
+class Direction_source : public Object{
+	public:
+	Point_3d direction;
+	Color intensity;
+
+	Direction_source(Point_3d p, float i){
+		this->direction = p;
+		this->intensity = i;
+	}	
+	Point_3d intersection(Line l);
+    Point_3d normal(Point_3d p);
+};
+
 
 // class Circle{
 //     public:

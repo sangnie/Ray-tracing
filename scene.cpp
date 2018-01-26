@@ -38,6 +38,18 @@ Point_3d closest_intersection(Line l, vector<Object*> objects){
 	return closest;
 }
 
+Color diffusion(Point_3d light, Color intensity, Point_3d normal, float k)
+{
+	return intensity.multiply(k * light.dot(normal))
+}
+
+Color specular(Point_3d light, Color intensity, Point_3d normal, float k, int n, Point_3d view)
+{
+	Point_3d ref = light.reflected(normal);
+	return intensity.multiply(k * pow(ref.dot(v),n));
+}
+
+
 
 int main(){
 	Point_3d eye(0,0,0);
