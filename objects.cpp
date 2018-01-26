@@ -5,6 +5,18 @@
 #include <math.h>
 using namespace std;
 
+std::ostream& operator<<(std::ostream &strm, const Point_3d &a) {
+	return strm << "Point(" << a.x << "," << a.y << "," << a.z << ")";
+}
+
+// std::ostream& operator<<(std::ostream &strm, const Sphere &a) {
+// 	return strm << "Sphere(" << a.radius << ")";
+// }
+
+// std::ostream& operator<<(std::ostream &strm, const Plane &a) {
+// 	return strm << "Plane("<< a.a << "," << a.b << "," << a.c << "," <<a.d << ")";
+// }
+
 Point_3d Point_3d::subtract(Point_3d p){
 	Point_3d p1;
 
@@ -32,7 +44,7 @@ Point_3d Sphere::intersection(Line l1){
 	Point_3d l = this->centre.subtract(l1.ro);
 
 	float t_ca = l.dot(l1.rd);
-	cout <<t_ca<<endl;
+	// cout <<t_ca<<endl;
 
 	if(t_ca < 0){
 		cout<<"yay"<<endl;
@@ -146,11 +158,18 @@ Point_3d Sphere::normal(Point_3d p)
 
 Point_3d Triangle::normal(Point_3d p)
 {
-	Point_3d side1 = (this->pt1).subtract(this->pt3);
-	Point_3d side2 = (this->pt2).subtract(this->pt3);
-	Point_3d nor = side1.cross(side2);
+	// Point_3d side1 = (this->pt1).subtract(this->pt3);
+	// Point_3d side2 = (this->pt2).subtract(this->pt3);
+	// Point_3d nor = side1.cross(side2);
+	Point_3d nor(this->p.a, this->p.b, this->p.c);
 	nor.normalize();
 	return nor;
+}
+
+Point_3d Rectangle::normal(Point_3d p){
+	Point_3d p1(this->p.a, this->p.b, this->p.c);
+	p1.normalize();
+	return p1;
 }
 
 Point_3d Plane::normal(Point_3d p)
@@ -175,55 +194,69 @@ Point_3d Point_3d::reflected(Point_3d normal)
 	return ref;
 }
 
+int main(int argc, char const *argv[])
+{
+	Point_3d eye(0,0,0);
+	Point_3d dir(0,0,1);
+	Line l(eye,dir);
 
+	Triangle t(Point_3d(2,1,4), Point_3d(-2,1,4), Point_3d(0,4,4));
 
-int main(){
-	Point_3d p1(2.0,3.0,4.0);
-	Point_3d p2(0,0,1.0);
-	Point_3d p0(0,0,-1);
-	Point_3d p10(10,0,-1);
-	Point_3d p4 = p2;
-	Point_3d p3 = p1.subtract(p2);
-	Point_3d p5 = p2.subtract(p4);
-
-	// cout << p3.x << endl;
-	// cout << p3.y << endl;
-	// cout << p3.z << endl;
-
-	// cout << p5.x << endl;
-	// cout << p5.y << endl;
-	// cout << p5.z << endl;
-
-	// try{
-	// 	Sphere s(p2,0.4);
-	// 	Line l(p0,p2);
-	// 	Point_3d p = s.intersection(l);
-	// 	cout << p.x << p.y << p.z << endl;
-	// } catch(const char* msg){
-	// 	cout << msg << endl;
-	// }
-
-	Point_3d pt1(2,0,0);
-	Point_3d pt2(-2,0,0);
-	Point_3d pt3(0,4,0);
-
-	Triangle t(pt1,pt2,pt3);
-	Plane pl = t.p;
-	// cout << pl.a << endl;
-	// cout << pl.b << endl;
-	// cout << pl.c << endl;
-	// cout << pl.d << endl;
 	try{
-		Line l(p10,p2);
-		// cout << l.ro.x << " " << l.ro.y << " " << l.ro.z << endl;
-		Point_3d p = pl.intersection(l);
-		cout << p.x << " " << p.y << " " << p.z << endl;
-
-		p = t.intersection(l);
-		cout << p.x << " " << p.y << " " << p.z << endl;
+		cout << t.intersection(l) << endl;
 	} catch(const char* msg){
 		cout << msg << endl;
-	}		
-
+	}
 	return 0;
 }
+
+// int main(){
+// 	Point_3d p1(2.0,3.0,4.0);
+// 	Point_3d p2(0,0,1.0);
+// 	Point_3d p0(0,0,-1);
+// 	Point_3d p10(10,0,-1);
+// 	Point_3d p4 = p2;
+// 	Point_3d p3 = p1.subtract(p2);
+// 	Point_3d p5 = p2.subtract(p4);
+
+// 	// cout << p3.x << endl;
+// 	// cout << p3.y << endl;
+// 	// cout << p3.z << endl;
+
+// 	// cout << p5.x << endl;
+// 	// cout << p5.y << endl;
+// 	// cout << p5.z << endl;
+
+// 	// try{
+// 	// 	Sphere s(p2,0.4);
+// 	// 	Line l(p0,p2);
+// 	// 	Point_3d p = s.intersection(l);
+// 	// 	cout << p.x << p.y << p.z << endl;
+// 	// } catch(const char* msg){
+// 	// 	cout << msg << endl;
+// 	// }
+
+// 	Point_3d pt1(2,0,0);
+// 	Point_3d pt2(-2,0,0);
+// 	Point_3d pt3(0,4,0);
+
+// 	Triangle t(pt1,pt2,pt3);
+// 	Plane pl = t.p;
+// 	// cout << pl.a << endl;
+// 	// cout << pl.b << endl;
+// 	// cout << pl.c << endl;
+// 	// cout << pl.d << endl;
+// 	try{
+// 		Line l(p10,p2);
+// 		// cout << l.ro.x << " " << l.ro.y << " " << l.ro.z << endl;
+// 		Point_3d p = pl.intersection(l);
+// 		cout << p.x << " " << p.y << " " << p.z << endl;
+
+// 		p = t.intersection(l);
+// 		cout << p.x << " " << p.y << " " << p.z << endl;
+// 	} catch(const char* msg){
+// 		cout << msg << endl;
+// 	}		
+
+// 	return 0;
+// }

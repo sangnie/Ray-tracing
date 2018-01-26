@@ -3,12 +3,13 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <ostream>
 
-#define SPHERE 1
-#define TRI 2
-#define BOX 3
-#define PLANE 4
-#define CIRCLE 5
+// #define SPHERE 1
+// #define TRI 2
+// #define BOX 3
+// #define PLANE 4
+// #define CIRCLE 5
 
 
 class Point_2d{
@@ -36,6 +37,8 @@ class Point_3d{
     Point_3d subtract(Point_3d p);
     void normalize();
     Point_3d reflected(Point_3d normal);
+
+    friend std::ostream& operator<<(std::ostream &strm, const Point_3d &a);
 }; 
 
 class Line{
@@ -66,7 +69,7 @@ class Sphere : public Object{
         this->centre = p;
         this->radius = r;
     }
-    Point_3d intersection(Line l1);
+    Point_3d intersection(Line l);
     Point_3d normal(Point_3d p);
 };
 
@@ -91,7 +94,7 @@ class Plane : public Object{
         this->d = w;
     }
 
-    Point_3d intersection(Line l1);
+    Point_3d intersection(Line l);
     Point_3d normal(Point_3d p);
 };
 
@@ -119,7 +122,7 @@ class Triangle : public Object{
        	this->p = p;
     }
 
-    Point_3d intersection(Line l1);
+    Point_3d intersection(Line l);
     Point_3d normal(Point_3d p);
 }; 
 
@@ -149,7 +152,7 @@ class Rectangle : public Object{
        	this->p = p;
     }
 
-    Point_3d intersection(Line l1);
+    Point_3d intersection(Line l);
     Point_3d normal(Point_3d p);
 }; 
 
