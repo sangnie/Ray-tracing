@@ -13,38 +13,13 @@ using namespace std;
 Color Ambient_Intensity(1,1,1);
 Color k_reflection(0.5,0.5,0.5);
 Color k_transmission(0.5,0.5,0.5);
-int MAX_DEPTH = 3;
+int MAX_DEPTH = 0;
 char *image_glob;
-const int width = 20;
-const int height = 20;
+const int width = 10;
+const int height = 10;
 
 float distance(Point_3d p1, Point_3d p2){
 	return (p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y) + (p1.z - p2.z)*(p1.z - p2.z);
-}
-
-Point_3d closest_intersection(Line l, vector<Object*> objects){
-	// bool intersect = false;
-	float min = std::numeric_limits<float>::max();
-	Point_3d closest = l.ro;
-
-	for (std::vector<Object*>::iterator it = objects.begin() ; it != objects.end(); ++it){
-		// cout << typeid(*it).name() << endl;
-		try{
-			// intersect = true;
-			Point_3d p = (*it)->intersection(l);
-			cout<< p <<endl;
-			float d = distance(l.ro,p);
-			if(d<min){
-				min = d;
-				closest = p;
-				// cout<<"yay"<<endl;
-			}
-			// cout << distance(l.ro,p)<<endl;
-		} catch(const char* msg){
-			// cout << "No intersection" << endl;
-		}
-	}
-	return closest;
 }
 
 Color diffusion(Point_3d light, Color intensity, Point_3d normal, Color kd)
@@ -58,7 +33,7 @@ Color specular(Point_3d light, Color intensity, Point_3d normal, Color ks, int n
 	return intensity.multiply(ks.multiply(pow(ref.dot(view),n_spec)));
 }
 
-Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int depth){
+Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int depth, int i, int j){
 
 	Color final(0,0,0);
 
@@ -70,8 +45,13 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 		// cout << typeid(*it).name() << endl;
 		try{
 			// intersect = true;
+			if(i==-15 && j==13){
+				cout<<"hchcjcjv"<<endl;
+				cout<<(*it)->type<<endl;
+				cout<<(*it)->n_spec<<endl;
+				cout<<l<<endl;
+			}
 			Point_3d p = (*it)->intersection(l);
-			cout<< p <<endl;
 			float d = distance(l.ro,p);
 			if(d<min){
 				min = d;
@@ -81,12 +61,14 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 			}
 			// cout << distance(l.ro,p)<<endl;
 		} catch(const char* msg){
-			// cout << "No intersection" << endl;
+			// cout << msg << endl;
 		}
 	}
 	// if((*nearest).type == LIGHT_POINT){
 	// 	return (*nearest).intensity;
 	// }
+
+	// cout<<closest<<"sgjhvj"<<endl;
 
 	Color diff(0,0,0);
 	Color spec(0,0,0);
@@ -109,7 +91,7 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 				try{
 					// intersect = true;
 					Point_3d p = (*it)->intersection(light_ray);
-					cout<< p <<endl;
+					// cout<< p <<endl;
 					float d = distance(light_ray.ro,p);
 					if(d<min_int){
 						min_int = d;
@@ -162,7 +144,7 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 		Point_3d reflected_direction = incident.reflected(normal_at_poi);
 		reflected_direction.normalize();
 		Line reflected(closest,reflected_direction);
-		refl = illumination(reflected, objects, sources, depth+1);
+		refl = illumination(reflected, objects, sources, depth+1,i,j);
 	}
 	refl = refl.multiply(k_reflection);
 
@@ -190,22 +172,26 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
     Point_3d u = n.cross(v);
     u.normalize();
 
+    cout<<u<<endl;
+    cout<<v<<endl;
+    cout<<n<<endl;
+
     // Color image[2*height + 1][2*width + 1];
     image_glob = new char[(2*height+1)*(2*width+1)*3];
     
     Point_3d camera = eye.add(n.multiply(E));
     Point_3d eye_(0,0,-1*E);
-
     for(int i = -height; i<=height; i++){
         for(int j = -width; j<=width; j++){
+		    cout<<"YAYYY"<<i<<" " << j<<endl;
             Point_3d ray = (eye_.subtract((Point_3d(i,j,0)))).multiply(-1);
             ray = v_to_w(ray, camera, u,v,n);
             ray.normalize();
             Line l(eye,ray);
-
+            cout<<l<<endl;
             // image[i][j] = illumination(l, objects, sources, 0);
             Color temp;
-            temp = illumination(l, objects, sources, 0);
+            temp = illumination(l, objects, sources, 0, i, j);
             // image_glob[i][j][0] = (int)temp.r;
             // image_glob[i][j][1] = (int)temp.g;
             // image_glob[i][j][2] = (int)temp.b;
@@ -260,9 +246,9 @@ int main(int argc, char **argv){
 	Plane* wall1 = new Plane(1,0,0,0,k,k,k,2);
 	Plane* wall2 = new Plane(0,1,0,0,k,k,k,2);
 	Plane* wall3 = new Plane(0,0,1,0,k,k,k,2);
-	Plane* wall4 = new Plane(1,0,0,1000,k,k,k,2);
-	Plane* wall5 = new Plane(0,1,0,1000,k,k,k,2);
-	Plane* wall6 = new Plane(0,0,1,1000,k,k,k,2);
+	Plane* wall4 = new Plane(1,0,0,-1000,k,k,k,2);
+	Plane* wall5 = new Plane(0,1,0,-1000,k,k,k,2);
+	Plane* wall6 = new Plane(0,0,1,-1000,k,k,k,2);
 
 	Color k1(0.2,0.2,0.8);
 	Sphere* ball = new Sphere(Point_3d(500,500,500), 50, k1,k1,k1,2);
@@ -283,6 +269,8 @@ int main(int argc, char **argv){
 	Point_3d dirn(1000,1000,-1000);
 	dirn.normalize();
 	click(objects, lights, Point_3d(0,0,1000), 20, dirn);
+	
+	cout<<"YAYYY"<<endl;
 	
 	glutInit( &argc, argv );
     glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE );

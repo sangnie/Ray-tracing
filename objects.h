@@ -96,6 +96,8 @@ class Line{
     	this->ro = ro;
     	this->rd = rd;
     }
+
+    friend std::ostream& operator<<(std::ostream &strm, const Line &a);
 }; 
 
 class Object{

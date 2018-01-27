@@ -9,6 +9,10 @@ std::ostream& operator<<(std::ostream &strm, const Point_3d &a) {
 	return strm << "Point(" << a.x << "," << a.y << "," << a.z << ")";
 }
 
+std::ostream& operator<<(std::ostream &strm, const Line &a) {
+	return strm << "Line(" << a.ro.x << "," << a.ro.y << "," << a.ro.z << "," << a.rd.x << "," << a.rd.y << "," << a.rd.z << ")";
+}
+
 // std::ostream& operator<<(std::ostream &strm, const Sphere &a) {
 // 	return strm << "Sphere(" << a.radius << ")";
 // }
@@ -56,26 +60,27 @@ Point_3d Point_3d::cross(Point_3d p)
 
 Point_3d Sphere::intersection(Line l1){
 	Point_3d l = this->centre.subtract(l1.ro);
-
+	// cout<<"l:   " << l<<endl;
+	// cout<<"rd:   " << l1.rd<<endl;
 	float t_ca = l.dot(l1.rd);
 	// cout <<t_ca<<endl;
 
 	if(t_ca < 0){
 		// cout<<"yay"<<endl;
-		throw "Behind eye";
+		throw "Sphere: Behind eye";
 	} else {
 		float dsqr = l.dot(l) - t_ca*t_ca;
 		float r = this->radius;
 		// cout<<"yay2"<< dsqr<< " " << sqrt(dsqr)<<" "<< r<<endl;
 		if(sqrt(dsqr) > r){
 			// cout<<"yay3"<<endl;
-			throw "No intersection";
+			throw "Sphere: No intersection";
 		} else {
 			float t_hc = sqrt(r*r - dsqr);
 			float t = t_ca - t_hc;
 
 			if(t < 0.000001 && t > -0.0000001){
-				throw "intersecting at eye";
+				throw "Sphere: intersecting at eye";
 			}
 			return Point_3d(l1.ro.x + t*l1.rd.x, l1.ro.y + t*l1.rd.y, l1.ro.z + t*l1.rd.z);
 		}
@@ -92,17 +97,18 @@ Point_3d Plane::intersection(Line l){
 
 	if(vd < 0.000001 && vd > -0.0000001){
 		// cout << "yay1" << endl;
-		throw "Parallel line, No intersection";
+		throw "Plane: Parallel line, No intersection";
 	} else {
 		// cout << l.ro.x << " " << l.ro.y << " " << l.ro.z << endl;
+		// cout<< a << " "<<b<<" "<< c<<" "<<d<<endl;
 		float v0 = a*l.ro.x + b*l.ro.y + c*l.ro.z + d;
 		float t = -1 * v0 / vd;
 		// cout << t << " " << v0 << " " << vd << endl;
 		if(t<-0.001){
-			throw "Behind eye";
+			throw "Plane: Behind eye";
 		} else {
 			if(v0 < 0.000001 && v0 > -0.0000001){
-				throw "intersecting at eye";
+				throw "Plane: intersecting at eye";
 			} else {
 				return Point_3d(l.ro.x + t*l.rd.x, l.ro.y + t*l.rd.y, l.ro.z + t*l.rd.z);
 			}
