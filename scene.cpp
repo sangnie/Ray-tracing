@@ -15,8 +15,8 @@ Color k_reflection(0.5,0.5,0.5);
 Color k_transmission(0.5,0.5,0.5);
 int MAX_DEPTH = 0;
 char *image_glob;
-const int width = 50;
-const int height = 50;
+const int width = 200;
+const int height = 200;
 
 float distance(Point_3d p1, Point_3d p2){
 	return (p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y) + (p1.z - p2.z)*(p1.z - p2.z);
@@ -155,7 +155,7 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 
 Point_3d v_to_w(Point_3d p, Point_3d r, Point_3d u, Point_3d v, Point_3d n){
     Point_3d p_(p.x*u.x + p.y*v.x + p.z*n.x, p.x*u.y + p.y*v.y + p.z*n.y, p.x*u.z + p.y*v.z + p.z*n.z);
-    return p_.add(r);
+    return p_;
 }
 
 Point_3d w_to_v(Point_3d p, Point_3d r, Point_3d u, Point_3d v, Point_3d n){
@@ -180,15 +180,17 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
     // image_glob = new char[(2*height+1)*(2*width+1)*3];
     
     Point_3d camera = eye.add(n.multiply(E));
+    // cout<<camera<<"camera"<<endl;
     Point_3d eye_(0,0,-1*E);
     for(int i = -height; i<=height; i++){
         for(int j = -width; j<=width; j++){
 		    // cout<<"YAYYY"<<i<<" " << j<<endl;
             Point_3d ray = (eye_.subtract((Point_3d(i,j,0)))).multiply(-1);
+            // cout<<ray<<endl;
             ray = v_to_w(ray, camera, u,v,n);
             ray.normalize();
             Line l(eye,ray);
-            // cout<<l<<endl;
+            // cout<<ray<<endl;
             // image[i][j] = illumination(l, objects, sources, 0);
             Color temp;
             temp = illumination(l, objects, sources, 0, i, j);
@@ -246,13 +248,13 @@ int main(int argc, char **argv){
 	Plane* wall1 = new Plane(1,0,0,0,k,k,k,2);
 	Plane* wall2 = new Plane(0,1,0,0,k,k,k,2);
 	Plane* wall3 = new Plane(0,0,1,0,k,k,k,2);
-	Plane* wall4 = new Plane(1,0,0,-1000,k,k,k,2);
-	Plane* wall5 = new Plane(0,1,0,-1000,k,k,k,2);
-	Plane* wall6 = new Plane(0,0,1,-1000,k,k,k,2);
+	Plane* wall4 = new Plane(1,0,0,-10000,k,k,k,2);
+	Plane* wall5 = new Plane(0,1,0,-10000,k,k,k,2);
+	Plane* wall6 = new Plane(0,0,1,-10000,k,k,k,2);
 
 	Color k1(0.2,0.2,0.8);
-	Sphere* ball = new Sphere(Point_3d(500,500,500), 50, k1,k1,k1,2);
-	Point_source* light = new Point_source(Point_3d(500,500,1000), Color(256,0,0));
+	Sphere* ball = new Sphere(Point_3d(5000,5000,2000), 500, k,k,k,2);
+	Point_source* light = new Point_source(Point_3d(5000,5000,10000), Color(0,255,255));
 
 	std::vector<Object*> objects;
 	objects.push_back(wall1);
@@ -266,12 +268,12 @@ int main(int argc, char **argv){
 	std::vector<Light*> lights;
 	lights.push_back(light);
 
-	Point_3d dirn(1000,1000,-1000);
+	Point_3d dirn(10000,10000,-10000);
 	dirn.normalize();
 	
     image_glob = new char[(2*height+1)*(2*width+1)*3];
 
-	click(objects, lights, Point_3d(0,0,1000), 20, dirn);
+	click(objects, lights, Point_3d(100,100,9900), 500, dirn);
 	
 	cout<<"YAYYY"<<endl;
 	
@@ -281,6 +283,8 @@ int main(int argc, char **argv){
     glutCreateWindow( "GLUT" );
     glutDisplayFunc( display );
     glutMainLoop();
+
+	// cout<<dirn<<endl;
 
 	return 0;
 }
