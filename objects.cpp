@@ -13,6 +13,10 @@ std::ostream& operator<<(std::ostream &strm, const Line &a) {
 	return strm << "Line(" << a.ro.x << "," << a.ro.y << "," << a.ro.z << "," << a.rd.x << "," << a.rd.y << "," << a.rd.z << ")";
 }
 
+std::ostream& operator<<(std::ostream &strm, const Color &a) {
+	return strm << "Color(" << a.r << "," << a.g << "," << a.b << ")";
+}
+
 // std::ostream& operator<<(std::ostream &strm, const Sphere &a) {
 // 	return strm << "Sphere(" << a.radius << ")";
 // }

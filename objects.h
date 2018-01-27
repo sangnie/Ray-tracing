@@ -54,6 +54,8 @@ class Color
 		s.b = this->b + c.b;
 		return s;
 	}
+
+	friend std::ostream& operator<<(std::ostream &strm, const Color &a);
 };
 
 class Point_2d{

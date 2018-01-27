@@ -14,9 +14,9 @@ Color Ambient_Intensity(1,1,1);
 Color k_reflection(0.5,0.5,0.5);
 Color k_transmission(0.5,0.5,0.5);
 int MAX_DEPTH = 0;
-char *image_glob;
 const int width = 200;
 const int height = 200;
+unsigned char image_glob[2*height + 1][2*width + 1][3];
 
 float distance(Point_3d p1, Point_3d p2){
 	return (p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y) + (p1.z - p2.z)*(p1.z - p2.z);
@@ -24,13 +24,13 @@ float distance(Point_3d p1, Point_3d p2){
 
 Color diffusion(Point_3d light, Color intensity, Point_3d normal, Color kd)
 {
-	return intensity.multiply(kd.multiply(light.dot(normal)));
+	return intensity.multiply(kd.multiply(abs(light.dot(normal))));
 }
 
 Color specular(Point_3d light, Color intensity, Point_3d normal, Color ks, int n_spec, Point_3d view)
 {
 	Point_3d ref = light.reflected(normal);
-	return intensity.multiply(ks.multiply(pow(ref.dot(view),n_spec)));
+	return intensity.multiply(ks.multiply(pow(abs(ref.dot(view)),n_spec)));
 }
 
 Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int depth, int i, int j){
@@ -194,12 +194,13 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
             // image[i][j] = illumination(l, objects, sources, 0);
             Color temp;
             temp = illumination(l, objects, sources, 0, i, j);
-            // image_glob[i][j][0] = (int)temp.r;
-            // image_glob[i][j][1] = (int)temp.g;
-            // image_glob[i][j][2] = (int)temp.b;
-            image_glob[((i+height)*width+(j+width))*3+0] = (int)temp.r;
-            image_glob[((i+height)*width+(j+width))*3+1] = (int)temp.g;
-            image_glob[((i+height)*width+(j+width))*3+2] = (int)temp.b;
+            // cout<< i << " " << j << " " << temp << endl;
+            image_glob[i + height][j + width][0] = (unsigned char)temp.r;
+            image_glob[i + height][j + width][1] = (unsigned char)temp.g;
+            image_glob[i + height][j + width][2] = (unsigned char)temp.b;
+            // image_glob[((i+height)*width+(j+width))*3+0] = (int)temp.r;
+            // image_glob[((i+height)*width+(j+width))*3+1] = (int)temp.g;
+            // image_glob[((i+height)*width+(j+width))*3+2] = (int)temp.b;
         }
     }
 }
@@ -210,18 +211,26 @@ void display()
     glClear( GL_COLOR_BUFFER_BIT );
 
     // char data[height][width][3];
-    // for( size_t y = 0; y < height; ++y )
+    // for( size_t y = 0; y < 2*height + 1; ++y )
     // {
-    //     for( size_t x = 0; x < width; ++x )
+    //     for( size_t x = 0; x < 2* width + 1; ++x )
     //     {
-    //         // data[y][x][0] = ( rand() % 256 ) ;//* 256 * 256 * 256;
-    //         // data[y][x][1] = ( rand() % 256 ) ;//* 256 * 256 * 256;
+    //         // image_glob[y][x][0] = ( rand() % 256 ) ;//* 256 * 256 * 256;
+    //         // image_glob[y][x][1] = ( rand() % 256 ) ;//* 256 * 256 * 256;
     //         // data[y][x][2] = ( rand() % 256 ) ;//* 256 * 256 * 256;
-    //         image_glob[(y*width+x)*3+0] = 128 ;
-    //         image_glob[(y*width+x)*3+1] = 128;
-    //         image_glob[(y*width+x)*3+2] = 0;
+    //         image_glob[(y*width+x)*3+0] = (rand() % 256);
+    //         image_glob[(y*width+x)*3+1] = (rand() % 256);
+    //         image_glob[(y*width+x)*3+2] = (rand() % 256);
 
     //     }
+    // }
+
+
+    // for(int i=0; i<(2*height+1)*(2*width+1)*3;i++){
+    // 	if(i%3==0){
+    // 		cout<<endl;
+    // 	}
+    // 	cout<<(image_glob[i])<<" ";
     // }
 
     glDrawPixels( 2*width+1, 2*height+1, GL_RGB, GL_UNSIGNED_BYTE, image_glob );
@@ -254,7 +263,7 @@ int main(int argc, char **argv){
 
 	Color k1(0.2,0.2,0.8);
 	Sphere* ball = new Sphere(Point_3d(5000,5000,2000), 500, k,k,k,2);
-	Point_source* light = new Point_source(Point_3d(5000,5000,10000), Color(0,255,255));
+	Point_source* light = new Point_source(Point_3d(5000,5000,10000), Color(0,0,255));
 
 	std::vector<Object*> objects;
 	objects.push_back(wall1);
@@ -271,14 +280,14 @@ int main(int argc, char **argv){
 	Point_3d dirn(10000,10000,-10000);
 	dirn.normalize();
 	
-    image_glob = new char[(2*height+1)*(2*width+1)*3];
+    // image_glob = new unsigned int [(2*height+1)*(2*width+1)*3];
 
 	click(objects, lights, Point_3d(100,100,9900), 500, dirn);
 	
 	cout<<"YAYYY"<<endl;
 	
 	glutInit( &argc, argv );
-    glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE );
+    glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE );
     glutInitWindowSize( 2*width+1, 2*height+1 );
     glutCreateWindow( "GLUT" );
     glutDisplayFunc( display );
