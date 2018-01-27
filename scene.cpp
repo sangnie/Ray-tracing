@@ -15,8 +15,8 @@ Color k_reflection(0.5,0.5,0.5);
 Color k_transmission(0.5,0.5,0.5);
 int MAX_DEPTH = 0;
 char *image_glob;
-const int width = 10;
-const int height = 10;
+const int width = 50;
+const int height = 50;
 
 float distance(Point_3d p1, Point_3d p2){
 	return (p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y) + (p1.z - p2.z)*(p1.z - p2.z);
@@ -45,12 +45,12 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 		// cout << typeid(*it).name() << endl;
 		try{
 			// intersect = true;
-			if(i==-15 && j==13){
-				cout<<"hchcjcjv"<<endl;
-				cout<<(*it)->type<<endl;
-				cout<<(*it)->n_spec<<endl;
-				cout<<l<<endl;
-			}
+			// if(i==-15 && j==13){
+			// 	cout<<"hchcjcjv"<<endl;
+			// 	cout<<(*it)->type<<endl;
+			// 	cout<<(*it)->n_spec<<endl;
+			// 	cout<<l<<endl;
+			// }
 			Point_3d p = (*it)->intersection(l);
 			float d = distance(l.ro,p);
 			if(d<min){
@@ -177,27 +177,27 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
     cout<<n<<endl;
 
     // Color image[2*height + 1][2*width + 1];
-    image_glob = new char[(2*height+1)*(2*width+1)*3];
+    // image_glob = new char[(2*height+1)*(2*width+1)*3];
     
     Point_3d camera = eye.add(n.multiply(E));
     Point_3d eye_(0,0,-1*E);
     for(int i = -height; i<=height; i++){
         for(int j = -width; j<=width; j++){
-		    cout<<"YAYYY"<<i<<" " << j<<endl;
+		    // cout<<"YAYYY"<<i<<" " << j<<endl;
             Point_3d ray = (eye_.subtract((Point_3d(i,j,0)))).multiply(-1);
             ray = v_to_w(ray, camera, u,v,n);
             ray.normalize();
             Line l(eye,ray);
-            cout<<l<<endl;
+            // cout<<l<<endl;
             // image[i][j] = illumination(l, objects, sources, 0);
             Color temp;
             temp = illumination(l, objects, sources, 0, i, j);
             // image_glob[i][j][0] = (int)temp.r;
             // image_glob[i][j][1] = (int)temp.g;
             // image_glob[i][j][2] = (int)temp.b;
-            image_glob[(i*width+j)*3+0] = (int)temp.r;
-            image_glob[(i*width+j)*3+1] = (int)temp.g;
-            image_glob[(i*width+j)*3+2] = (int)temp.b;
+            image_glob[((i+height)*width+(j+width))*3+0] = (int)temp.r;
+            image_glob[((i+height)*width+(j+width))*3+1] = (int)temp.g;
+            image_glob[((i+height)*width+(j+width))*3+2] = (int)temp.b;
         }
     }
 }
@@ -207,22 +207,22 @@ void display()
     glClearColor( 0, 0, 0, 1 );
     glClear( GL_COLOR_BUFFER_BIT );
 
-    // char data[H][W][3];
-    // for( size_t y = 0; y < H; ++y )
+    // char data[height][width][3];
+    // for( size_t y = 0; y < height; ++y )
     // {
-    //     for( size_t x = 0; x < W; ++x )
+    //     for( size_t x = 0; x < width; ++x )
     //     {
     //         // data[y][x][0] = ( rand() % 256 ) ;//* 256 * 256 * 256;
     //         // data[y][x][1] = ( rand() % 256 ) ;//* 256 * 256 * 256;
     //         // data[y][x][2] = ( rand() % 256 ) ;//* 256 * 256 * 256;
-    //         data[y][x][0] = 128 ;
-    //         data[y][x][1] = 128;
-    //         data[y][x][2] = 0;
+    //         image_glob[(y*width+x)*3+0] = 128 ;
+    //         image_glob[(y*width+x)*3+1] = 128;
+    //         image_glob[(y*width+x)*3+2] = 0;
 
     //     }
     // }
 
-    glDrawPixels( width, height, GL_RGB, GL_UNSIGNED_BYTE, image_glob );
+    glDrawPixels( 2*width+1, 2*height+1, GL_RGB, GL_UNSIGNED_BYTE, image_glob );
 
     glutSwapBuffers();
 }
@@ -268,6 +268,9 @@ int main(int argc, char **argv){
 
 	Point_3d dirn(1000,1000,-1000);
 	dirn.normalize();
+	
+    image_glob = new char[(2*height+1)*(2*width+1)*3];
+
 	click(objects, lights, Point_3d(0,0,1000), 20, dirn);
 	
 	cout<<"YAYYY"<<endl;
