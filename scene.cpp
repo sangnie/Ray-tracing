@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
-#include <ostream>
+#include <fstream>
 #include "objects.h"
 #include <math.h>
 #include <vector>
@@ -10,12 +10,12 @@
 #include <GL/glut.h>
 using namespace std;
 
-Color Ambient_Intensity(1,1,1);
+Color Ambient_Intensity(80,80,80);
 Color k_reflection(0.5,0.5,0.5);
 Color k_transmission(0.5,0.5,0.5);
-int MAX_DEPTH = 0;
-const int width = 200;
-const int height = 200;
+int MAX_DEPTH = 2;
+const int width = 250;
+const int height = 250;
 unsigned char image_glob[2*height + 1][2*width + 1][3];
 
 float distance(Point_3d p1, Point_3d p2){
@@ -44,13 +44,6 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 	for (std::vector<Object*>::iterator it = objects.begin() ; it != objects.end(); ++it){
 		// cout << typeid(*it).name() << endl;
 		try{
-			// intersect = true;
-			// if(i==-15 && j==13){
-			// 	cout<<"hchcjcjv"<<endl;
-			// 	cout<<(*it)->type<<endl;
-			// 	cout<<(*it)->n_spec<<endl;
-			// 	cout<<l<<endl;
-			// }
 			Point_3d p = (*it)->intersection(l);
 			float d = distance(l.ro,p);
 			if(d<min){
@@ -79,24 +72,25 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 		if((*it)->type = LIGHT_POINT)
 		{	
 			Point_3d direc = (*it)->location.subtract(closest);
+			direc.normalize();
 			Line light_ray(closest,direc);
 			
 			float min_int = std::numeric_limits<float>::max();
 			Point_3d closest_int = light_ray.ro;
 			Object *nearest_int;
 
-			for (std::vector<Object*>::iterator it = objects.begin() ; it != objects.end(); ++it)
+			for (std::vector<Object*>::iterator it2 = objects.begin() ; it2 != objects.end(); ++it2)
 			{
-				// cout << typeid(*it).name() << endl;
+				// cout << typeid(*it2).name() << endl;
 				try{
 					// intersect = true;
-					Point_3d p = (*it)->intersection(light_ray);
+					Point_3d p = (*it2)->intersection(light_ray);
 					// cout<< p <<endl;
 					float d = distance(light_ray.ro,p);
 					if(d<min_int){
 						min_int = d;
 						closest_int = p;	//Point of intersection
-						nearest_int = (*it);	//Intersecting object
+						nearest_int = (*it2);	//Intersecting object
 						// cout<<"yay"<<endl;
 					}
 					// cout << distance(l.ro,p)<<endl;
@@ -172,9 +166,9 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
     Point_3d u = n.cross(v);
     u.normalize();
 
-    cout<<u<<endl;
-    cout<<v<<endl;
-    cout<<n<<endl;
+    // cout<<u<<endl;
+    // cout<<v<<endl;
+    // cout<<n<<endl;
 
     // Color image[2*height + 1][2*width + 1];
     // image_glob = new char[(2*height+1)*(2*width+1)*3];
@@ -182,8 +176,12 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
     Point_3d camera = eye.add(n.multiply(E));
     // cout<<camera<<"camera"<<endl;
     Point_3d eye_(0,0,-1*E);
-    for(int i = -height; i<=height; i++){
-        for(int j = -width; j<=width; j++){
+
+    ofstream img;
+    img.open("image.ppm");
+    img << "P3\n" << 2*width + 1 << " " << 2*height+1 << "\n255\n";
+    for(int i = height; i>=-height; i--){
+	    for(int j = -width; j<=width; j++){
 		    // cout<<"YAYYY"<<i<<" " << j<<endl;
             Point_3d ray = (eye_.subtract((Point_3d(i,j,0)))).multiply(-1);
             // cout<<ray<<endl;
@@ -198,11 +196,16 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
             image_glob[i + height][j + width][0] = (unsigned char)temp.r;
             image_glob[i + height][j + width][1] = (unsigned char)temp.g;
             image_glob[i + height][j + width][2] = (unsigned char)temp.b;
+            img << (temp.r<255?(int) temp.r : 255) << " ";
+            img << (temp.g<255?(int) temp.g : 255) << " ";
+            img << (temp.b<255?(int) temp.b : 255) << " ";
             // image_glob[((i+height)*width+(j+width))*3+0] = (int)temp.r;
             // image_glob[((i+height)*width+(j+width))*3+1] = (int)temp.g;
             // image_glob[((i+height)*width+(j+width))*3+2] = (int)temp.b;
         }
+        img << endl;
     }
+    img.close();
 }
 
 void display()
@@ -262,8 +265,8 @@ int main(int argc, char **argv){
 	Plane* wall6 = new Plane(0,0,1,-10000,k,k,k,2);
 
 	Color k1(0.2,0.2,0.8);
-	Sphere* ball = new Sphere(Point_3d(5000,5000,2000), 500, k,k,k,2);
-	Point_source* light = new Point_source(Point_3d(5000,5000,10000), Color(0,0,255));
+	Sphere* ball = new Sphere(Point_3d(5000,5000,500), 500, k1,k1,k1,2);
+	Point_source* light = new Point_source(Point_3d(5000,5000,10000), Color(255,255,255));
 
 	std::vector<Object*> objects;
 	objects.push_back(wall1);
@@ -284,14 +287,14 @@ int main(int argc, char **argv){
 
 	click(objects, lights, Point_3d(100,100,9900), 500, dirn);
 	
-	cout<<"YAYYY"<<endl;
+	// cout<<"YAYYY"<<endl;
 	
-	glutInit( &argc, argv );
-    glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE );
-    glutInitWindowSize( 2*width+1, 2*height+1 );
-    glutCreateWindow( "GLUT" );
-    glutDisplayFunc( display );
-    glutMainLoop();
+	// glutInit( &argc, argv );
+ //    glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE );
+ //    glutInitWindowSize( 2*width+1, 2*height+1 );
+ //    glutCreateWindow( "GLUT" );
+ //    glutDisplayFunc( display );
+ //    glutMainLoop();
 
 	// cout<<dirn<<endl;
 
