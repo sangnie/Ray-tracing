@@ -100,7 +100,7 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 				}
 			}
 			float source_dist = distance(closest,(*it)->location);
-			if(min_int < source_dist){
+			if(min_int + 0.001 < source_dist ){
 				// cout<<light_ray<<endl;
 				// cout<<closest<<endl;
 				// cout<<min_int<<" "<<source_dist<<endl;
@@ -220,9 +220,9 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
             img << (temp.r<255?(int) temp.r : 255) << " ";
             img << (temp.g<255?(int) temp.g : 255) << " ";
             img << (temp.b<255?(int) temp.b : 255) << " ";
-            if(temp.r < 50 && temp.g < 50 && temp.b < 50){
-            	cout << i << " " << j << endl;
-            }
+            // if(temp.r < 50 && temp.g < 50 && temp.b < 50){
+            // 	cout << i << " " << j << endl;
+            // }
             // image_glob[((i+height)*width+(j+width))*3+0] = (int)temp.r;
             // image_glob[((i+height)*width+(j+width))*3+1] = (int)temp.g;
             // image_glob[((i+height)*width+(j+width))*3+2] = (int)temp.b;
@@ -288,9 +288,12 @@ int main(int argc, char **argv){
 	Plane* wall5 = new Plane(0,1,0,-10000,k,k,k,2);
 	Plane* wall6 = new Plane(0,0,1,-10000,k,k,k,2);
 
-	Color k1(0.2,0.2,0.8);
-	Sphere* ball = new Sphere(Point_3d(5000,5000,500), 500, k1,k1,k1,2);
-	Point_source* light = new Point_source(Point_3d(5000,5000,10000), Color(255,255,255));
+	Color k1(0.2,0.8,0.2);
+	Sphere* ball = new Sphere(Point_3d(5000,5000,500), 500, k,k,k,2);
+	// Point_source* light = new Point_source(Point_3d(5000,5000,10000), Color(255,255,255));
+	// Point_source* light2 = new Point_source(Point_3d(5000,9800,5000), Color(255,255,255));
+	Point_source* light3 = new Point_source(Point_3d(9800,5000,8000), Color(0,255,255));
+	Point_source* light4 = new Point_source(Point_3d(200,5000,8000), Color(255,255,0));
 
 	std::vector<Object*> objects;
 	objects.push_back(wall1);
@@ -302,10 +305,13 @@ int main(int argc, char **argv){
 	objects.push_back(ball);
 
 	std::vector<Light*> lights;
-	lights.push_back(light);
+	// lights.push_back(light);
+	// lights.push_back(light2);
+	lights.push_back(light3);
+	lights.push_back(light4);
 
-	Point_3d eye(100,400,9900);
-	Point_3d dirn = eye.subtract(Point_3d(10000,10000,0)).multiply(-1);
+	Point_3d eye(5000,500,9500);
+	Point_3d dirn = eye.subtract(Point_3d(5000,10000,0)).multiply(-1);
 	dirn.normalize();
 	
     // image_glob = new unsigned int [(2*height+1)*(2*width+1)*3];
