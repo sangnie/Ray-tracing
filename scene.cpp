@@ -11,9 +11,9 @@
 using namespace std;
 
 Color Ambient_Intensity(80,80,80);
-Color k_reflection(0.5,0.5,0.5);
+Color k_reflection(0.7,0.7,0.7);
 Color k_transmission(0.5,0.5,0.5);
-int MAX_DEPTH = 0;
+int MAX_DEPTH = 1;
 const int width = 250;
 const int height = 250;
 unsigned char image_glob[2*height + 1][2*width + 1][3];
@@ -142,6 +142,10 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 		Point_3d incident = l.rd.multiply(-1);
 		incident.normalize();
 		Point_3d normal_at_poi = (*nearest).normal(closest);
+		if(incident.dot(normal_at_poi) < 0 )
+		{
+			normal_at_poi = normal_at_poi.multiply(-1);
+		}
 		Point_3d reflected_direction = incident.reflected(normal_at_poi);
 		reflected_direction.normalize();
 		Line reflected(closest,reflected_direction);
@@ -149,8 +153,11 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 	}
 	refl = refl.multiply(k_reflection);
 
-	final.add(refl);
+	final = final.add(refl);
 
+	// cout<<"Prefinal"<<final<<endl;
+	// cout<<refl<<endl;
+	// cout<<final<<endl;
 	return final;
 }
 
@@ -185,8 +192,8 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
     Point_3d eye_(0,0,-1*E);
 
 
-    // int i=15;
-    // int j = -8;
+    // int i=160;
+    // int j = 236;
     // Point_3d ray = (eye_.subtract((Point_3d(i,j,0)))).multiply(-1);
     // // cout<<ray<<endl;
     // ray = v_to_w(ray, camera, u,v,n);
@@ -196,7 +203,7 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
     // // image[i][j] = illumination(l, objects, sources, 0);
     // Color temp;
     // temp = illumination(l, objects, sources, 0, i, j);
-    // cout<<temp<<endl;
+    // // cout<<temp<<endl;
 
     ofstream img;
     img.open("image.ppm");
@@ -220,9 +227,9 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
             img << (temp.r<255?(int) temp.r : 255) << " ";
             img << (temp.g<255?(int) temp.g : 255) << " ";
             img << (temp.b<255?(int) temp.b : 255) << " ";
-            // if(temp.r < 50 && temp.g < 50 && temp.b < 50){
-            // 	cout << i << " " << j << endl;
-            // }
+            if(temp.r < 50 && temp.g < 50 && temp.b < 50){
+            	cout << i << " " << j << endl;
+            }
             // image_glob[((i+height)*width+(j+width))*3+0] = (int)temp.r;
             // image_glob[((i+height)*width+(j+width))*3+1] = (int)temp.g;
             // image_glob[((i+height)*width+(j+width))*3+2] = (int)temp.b;
@@ -289,7 +296,9 @@ int main(int argc, char **argv){
 	Plane* wall6 = new Plane(0,0,1,-10000,k,k,k,2);
 
 	Color k1(0.2,0.8,0.2);
+	Color k0(0,0,0);
 	Sphere* ball = new Sphere(Point_3d(5000,5000,500), 500, k,k,k,2);
+	Rectangle* mirror = new Rectangle(Point_3d(2000,9990,8000),Point_3d(8000,9990,8000),Point_3d(8000,9990,2000),Point_3d(2000,9990,2000),k0,k0,k0,2);
 	// Point_source* light = new Point_source(Point_3d(5000,5000,10000), Color(255,255,255));
 	// Point_source* light2 = new Point_source(Point_3d(5000,9800,5000), Color(255,255,255));
 	Point_source* light3 = new Point_source(Point_3d(9800,5000,8000), Color(0,255,255));
@@ -303,6 +312,7 @@ int main(int argc, char **argv){
 	objects.push_back(wall5);
 	objects.push_back(wall6);
 	objects.push_back(ball);
+	objects.push_back(mirror);
 
 	std::vector<Light*> lights;
 	// lights.push_back(light);
