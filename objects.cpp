@@ -111,7 +111,7 @@ Point_3d Plane::intersection(Line l){
 		if(t<-0.001){
 			throw "Plane: Behind eye";
 		} else {
-			if(v0 < 0.000001 && v0 > -0.0000001){
+			if(v0 < 0.001 && v0 > -0.001){
 				throw "Plane: intersecting at eye";
 			} else {
 				return Point_3d(l.ro.x + t*l.rd.x, l.ro.y + t*l.rd.y, l.ro.z + t*l.rd.z);

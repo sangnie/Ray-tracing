@@ -91,6 +91,7 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 						min_int = d;
 						closest_int = p;	//Point of intersection
 						nearest_int = (*it2);	//Intersecting object
+
 						// cout<<"yay"<<endl;
 					}
 					// cout << distance(l.ro,p)<<endl;
@@ -100,6 +101,7 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 			}
 			float source_dist = distance(closest,(*it)->location);
 			if(min_int < source_dist){
+				// cout<<light_ray<<endl;
 				// cout<<closest<<endl;
 				// cout<<min_int<<" "<<source_dist<<endl;
 				// cout<<closest_int << " " << (*nearest_int).type<<endl;
@@ -183,51 +185,51 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
     Point_3d eye_(0,0,-1*E);
 
 
-    int i=15;
-    int j = -8;
-    Point_3d ray = (eye_.subtract((Point_3d(i,j,0)))).multiply(-1);
-    // cout<<ray<<endl;
-    ray = v_to_w(ray, camera, u,v,n);
-    ray.normalize();
-    Line l(eye,ray);
-    // cout<<ray<<endl;
-    // image[i][j] = illumination(l, objects, sources, 0);
-    Color temp;
-    temp = illumination(l, objects, sources, 0, i, j);
-    cout<<temp<<endl;
+    // int i=15;
+    // int j = -8;
+    // Point_3d ray = (eye_.subtract((Point_3d(i,j,0)))).multiply(-1);
+    // // cout<<ray<<endl;
+    // ray = v_to_w(ray, camera, u,v,n);
+    // ray.normalize();
+    // Line l(eye,ray);
+    // // cout<<ray<<endl;
+    // // image[i][j] = illumination(l, objects, sources, 0);
+    // Color temp;
+    // temp = illumination(l, objects, sources, 0, i, j);
+    // cout<<temp<<endl;
 
-    // ofstream img;
-    // img.open("image.ppm");
-    // img << "P3\n" << 2*width + 1 << " " << 2*height+1 << "\n255\n";
-    // for(int i = height; i>=-height; i--){
-	   //  for(int j = -width; j<=width; j++){
-		  //   // cout<<"YAYYY"<<i<<" " << j<<endl;
-    //         Point_3d ray = (eye_.subtract((Point_3d(i,j,0)))).multiply(-1);
-    //         // cout<<ray<<endl;
-    //         ray = v_to_w(ray, camera, u,v,n);
-    //         ray.normalize();
-    //         Line l(eye,ray);
-    //         // cout<<ray<<endl;
-    //         // image[i][j] = illumination(l, objects, sources, 0);
-    //         Color temp;
-    //         temp = illumination(l, objects, sources, 0, i, j);
-    //         // cout<< i << " " << j << " " << temp << endl;
-    //         image_glob[i + height][j + width][0] = (unsigned char)temp.r;
-    //         image_glob[i + height][j + width][1] = (unsigned char)temp.g;
-    //         image_glob[i + height][j + width][2] = (unsigned char)temp.b;
-    //         img << (temp.r<255?(int) temp.r : 255) << " ";
-    //         img << (temp.g<255?(int) temp.g : 255) << " ";
-    //         img << (temp.b<255?(int) temp.b : 255) << " ";
-    //         if(temp.r < 50 && temp.g < 50 && temp.b < 50){
-    //         	cout << i << " " << j << endl;
-    //         }
-    //         // image_glob[((i+height)*width+(j+width))*3+0] = (int)temp.r;
-    //         // image_glob[((i+height)*width+(j+width))*3+1] = (int)temp.g;
-    //         // image_glob[((i+height)*width+(j+width))*3+2] = (int)temp.b;
-    //     }
-    //     img << endl;
-    // }
-    // img.close();
+    ofstream img;
+    img.open("image.ppm");
+    img << "P3\n" << 2*width + 1 << " " << 2*height+1 << "\n255\n";
+    for(int i = height; i>=-height; i--){
+	    for(int j = -width; j<=width; j++){
+		    // cout<<"YAYYY"<<i<<" " << j<<endl;
+            Point_3d ray = (eye_.subtract((Point_3d(i,j,0)))).multiply(-1);
+            // cout<<ray<<endl;
+            ray = v_to_w(ray, camera, u,v,n);
+            ray.normalize();
+            Line l(eye,ray);
+            // cout<<ray<<endl;
+            // image[i][j] = illumination(l, objects, sources, 0);
+            Color temp;
+            temp = illumination(l, objects, sources, 0, i, j);
+            // cout<< i << " " << j << " " << temp << endl;
+            image_glob[i + height][j + width][0] = (unsigned char)temp.r;
+            image_glob[i + height][j + width][1] = (unsigned char)temp.g;
+            image_glob[i + height][j + width][2] = (unsigned char)temp.b;
+            img << (temp.r<255?(int) temp.r : 255) << " ";
+            img << (temp.g<255?(int) temp.g : 255) << " ";
+            img << (temp.b<255?(int) temp.b : 255) << " ";
+            if(temp.r < 50 && temp.g < 50 && temp.b < 50){
+            	cout << i << " " << j << endl;
+            }
+            // image_glob[((i+height)*width+(j+width))*3+0] = (int)temp.r;
+            // image_glob[((i+height)*width+(j+width))*3+1] = (int)temp.g;
+            // image_glob[((i+height)*width+(j+width))*3+2] = (int)temp.b;
+        }
+        img << endl;
+    }
+    img.close();
 }
 
 void display()
@@ -288,7 +290,7 @@ int main(int argc, char **argv){
 
 	Color k1(0.2,0.2,0.8);
 	Sphere* ball = new Sphere(Point_3d(5000,5000,500), 500, k1,k1,k1,2);
-	Point_source* light = new Point_source(Point_3d(5000,5000,9500), Color(255,255,255));
+	Point_source* light = new Point_source(Point_3d(5000,5000,10000), Color(255,255,255));
 
 	std::vector<Object*> objects;
 	objects.push_back(wall1);
