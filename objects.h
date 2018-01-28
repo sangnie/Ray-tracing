@@ -12,6 +12,7 @@
 #define RECTANGLE 5
 #define LIGHT_POINT 6
 #define LIGHT_DIREC 7
+#define LIGHT_SPOT 8
 
 
 class Color
@@ -270,6 +271,7 @@ class Light{
 	int type;
 	Point_3d location;
 	Point_3d direction;
+	float dot_min;
 };
 
 class Point_source : public Light{
@@ -300,6 +302,22 @@ class Direction_source : public Light{
  	// Point_3d normal(Point_3d p);
 };
 
+class Spotlight : public Light{
+	public:
+	// Point_3d direction;
+	// Color intensity;
+
+	Spotlight(Point_3d loc, Point_3d dir, float angle, Color i){
+		dir.normalize();
+		this->direction = dir;
+		this->intensity = i;
+		this->location = loc;
+		this->dot_min = angle;
+		this->type = LIGHT_SPOT;
+	}	
+	// Point_3d intersection(Line l);
+ 	// Point_3d normal(Point_3d p);
+};
 
 // class Circle{
 //     public:

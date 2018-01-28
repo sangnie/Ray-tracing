@@ -13,7 +13,7 @@ using namespace std;
 Color Ambient_Intensity(80,80,80);
 // Color k_reflection(0.7,0.7,0.7);
 // Color k_transmission(0.5,0.5,0.5);
-int MAX_DEPTH = 1;
+int MAX_DEPTH = 0;
 const int width = 250;
 const int height = 250;
 unsigned char image_glob[2*height + 1][2*width + 1][3];
@@ -69,8 +69,9 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 	for (std::vector<Light*>::iterator it = sources.begin() ; it != sources.end(); ++it)
 	{
 		// cout << typeid(*it).name() << endl;
-		if((*it)->type = LIGHT_POINT)
+		if((*it)->type == LIGHT_POINT)
 		{	
+			// cout<<"c";
 			Point_3d direc = (*it)->location.subtract(closest);
 			direc.normalize();
 			Line light_ray(closest,direc);
@@ -121,8 +122,73 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 			view_vector.normalize();
 			spec = spec.add(specular(dir,(*it)->intensity,(*nearest).normal(closest),(*nearest).ks,(*nearest).n_spec,view_vector));
 		}
-		else if((*it)->type = LIGHT_DIREC)
+		else if((*it)->type == LIGHT_DIREC)
 		{
+
+		}
+		else if((*it)->type == LIGHT_SPOT)
+		{
+			// cout<<"a";
+			Point_3d direc = (*it)->location.subtract(closest);
+			direc.normalize();
+			Line light_ray(closest,direc);
+			
+			float min_int = std::numeric_limits<float>::max();
+			Point_3d closest_int = light_ray.ro;
+			Object *nearest_int;
+
+			for (std::vector<Object*>::iterator it2 = objects.begin() ; it2 != objects.end(); ++it2)
+			{
+				// cout << typeid(*it2).name() << endl;
+				try{
+					// intersect = true;
+					Point_3d p = (*it2)->intersection(light_ray);
+					// cout<< p <<endl;
+					float d = distance(light_ray.ro,p);
+					if(d<min_int){
+						min_int = d;
+						closest_int = p;	//Point of intersection
+						nearest_int = (*it2);	//Intersecting object
+
+						// cout<<"yay"<<endl;
+					}
+					// cout << distance(l.ro,p)<<endl;
+				} catch(const char* msg){
+					// cout << "No intersection" << endl;
+				}
+			}
+			float source_dist = distance(closest,(*it)->location);
+			if(min_int + 0.001 < source_dist ){
+				// cout<<light_ray<<endl;
+				// cout<<closest<<endl;
+				// cout<<min_int<<" "<<source_dist<<endl;
+				// cout<<closest_int << " " << (*nearest_int).type<<endl;
+				// cout<<"BLOCKED"<<endl;
+				continue;	// Light blocked
+			}
+
+			// Check if within angle
+
+			Point_3d view_at_source = direc.multiply(-1);
+
+			if(view_at_source.dot((*it)->direction) < (*it)->dot_min)
+			{
+				// cout<<"b";
+				continue;
+			}
+
+			// cout<<"n";
+			// Add Diffused and Spectral components
+			
+			// Diffusion
+			Point_3d dir = direc;
+			// dir.normalize();
+			diff = diff.add(diffusion(dir,(*it)->intensity,(*nearest).normal(closest),(*nearest).kd));
+
+			//Spectral
+			Point_3d view_vector = l.rd.multiply(-1);
+			view_vector.normalize();
+			spec = spec.add(specular(dir,(*it)->intensity,(*nearest).normal(closest),(*nearest).ks,(*nearest).n_spec,view_vector));
 
 		}
 	
@@ -230,9 +296,9 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
             img << (temp.r<255?(int) temp.r : 255) << " ";
             img << (temp.g<255?(int) temp.g : 255) << " ";
             img << (temp.b<255?(int) temp.b : 255) << " ";
-            if(temp.r < 50 && temp.g < 50 && temp.b < 50){
-            	cout << i << " " << j << endl;
-            }
+            // if(temp.r < 50 && temp.g < 50 && temp.b < 50){
+            // 	cout << i << " " << j << endl;
+            // }
             // image_glob[((i+height)*width+(j+width))*3+0] = (int)temp.r;
             // image_glob[((i+height)*width+(j+width))*3+1] = (int)temp.g;
             // image_glob[((i+height)*width+(j+width))*3+2] = (int)temp.b;
@@ -301,12 +367,14 @@ int main(int argc, char **argv){
 
 	Color k1(0.2,0.8,0.2);
 	Color k2(0.7,0.7,0.7);
-	Sphere* ball = new Sphere(Point_3d(5000,5000,500), 500, k,k,k,k0,k0,2);
+	Sphere* ball = new Sphere(Point_3d(5000,5000,2000), 500, k,k,k,k0,k0,2);
 	Rectangle* mirror = new Rectangle(Point_3d(2000,9990,8000),Point_3d(8000,9990,8000),Point_3d(8000,9990,2000),Point_3d(2000,9990,2000),k0,k0,k0,k2,k2,2);
 	// Point_source* light = new Point_source(Point_3d(5000,5000,10000), Color(255,255,255));
 	// Point_source* light2 = new Point_source(Point_3d(5000,9800,5000), Color(255,255,255));
 	Point_source* light3 = new Point_source(Point_3d(9800,5000,8000), Color(0,255,255));
 	Point_source* light4 = new Point_source(Point_3d(200,5000,8000), Color(255,255,0));
+	Point_3d sphere_centre = Point_3d(5000,5000,2000);
+	Spotlight* light5 = new Spotlight(Point_3d(9990,5000,8000), sphere_centre.subtract(Point_3d(9990,5000,8000)), 0.4 ,Color(255,255,0));
 
 	std::vector<Object*> objects;
 	objects.push_back(wall1);
@@ -321,8 +389,11 @@ int main(int argc, char **argv){
 	std::vector<Light*> lights;
 	// lights.push_back(light);
 	// lights.push_back(light2);
-	lights.push_back(light3);
-	lights.push_back(light4);
+	// lights.push_back(light3);
+	// lights.push_back(light4);
+	lights.push_back(light5);
+
+	cout<<"spot"<<light5->type<<" "<<light5->direction<<" "<<light5->intensity<<" "<<light5->location<<" "<<light5->dot_min<<endl;
 
 	Point_3d eye(5000,500,9500);
 	Point_3d dirn = eye.subtract(Point_3d(5000,10000,0)).multiply(-1);
