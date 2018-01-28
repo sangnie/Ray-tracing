@@ -169,6 +169,21 @@ Point_3d Rectangle::intersection(Line l){
 	}	
 }
 
+Point_3d Circle::intersection(Line l){
+	
+	try{
+		Point_3d p = this->p.intersection(l);
+		Point_3d d = p.subtract(this->centre);
+		if(d.dot(d) < this->radius){
+			return p;
+		} else {
+			throw "Outside Circle";
+		}
+	} catch(const char* msg){
+		throw "No intersection";
+	}	
+}
+
 void Point_3d::normalize()
 {
 	float mag = pow((this->x),2) + pow((this->y),2) + pow((this->z),2);
@@ -196,6 +211,12 @@ Point_3d Triangle::normal(Point_3d p)
 }
 
 Point_3d Rectangle::normal(Point_3d p){
+	Point_3d p1(this->p.a, this->p.b, this->p.c);
+	p1.normalize();
+	return p1;
+}
+
+Point_3d Circle::normal(Point_3d p){
 	Point_3d p1(this->p.a, this->p.b, this->p.c);
 	p1.normalize();
 	return p1;

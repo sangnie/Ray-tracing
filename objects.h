@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <ostream>
 
+#define CIRCLE 0
 #define SPHERE 1
 #define TRIANGLE 2
 #define BOX 3
@@ -300,19 +301,27 @@ class Direction_source : public Light{
  	// Point_3d normal(Point_3d p);
 };
 
+class Circle : public Object{
+    public:
+    Point_3d centre;
+    float radius;
+    Plane p;
 
-// class Circle{
-//     public:
-//     Point_3d centre;
-//     float radius;
-//     plane p;
+    Circle(Point_3d p, float r, Plane pl, Color ks, Color kd, Color ka, Color kr, Color kt, int n_spec){
+        this->centre = p;
+        this->radius = r;
+        this->p = pl;
+        this->ks = ks;
+        this->kd = kd;
+        this->ka = ka;
+        this->kr = kr;
+        this->kt = kt;
+        this->n_spec = n_spec;
+        this->type = CIRCLE;
+    }
 
-//     Circle(Point_3d p, float r, plane pl1){
-
-//     }
-
-//     Point_3d intersection(Line l1);
-//     Point_3d normal(Point_3d p);
-// }
+    Point_3d intersection(Line l1);
+    Point_3d normal(Point_3d p);
+};
 
 #endif

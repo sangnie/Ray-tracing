@@ -242,106 +242,160 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
     img.close();
 }
 
-void display()
-{
-    glClearColor( 0, 0, 0, 1 );
-    glClear( GL_COLOR_BUFFER_BIT );
+// void display()
+// {
+//     glClearColor( 0, 0, 0, 1 );
+//     glClear( GL_COLOR_BUFFER_BIT );
 
-    // char data[height][width][3];
-    // for( size_t y = 0; y < 2*height + 1; ++y )
-    // {
-    //     for( size_t x = 0; x < 2* width + 1; ++x )
-    //     {
-    //         // image_glob[y][x][0] = ( rand() % 256 ) ;//* 256 * 256 * 256;
-    //         // image_glob[y][x][1] = ( rand() % 256 ) ;//* 256 * 256 * 256;
-    //         // data[y][x][2] = ( rand() % 256 ) ;//* 256 * 256 * 256;
-    //         image_glob[(y*width+x)*3+0] = (rand() % 256);
-    //         image_glob[(y*width+x)*3+1] = (rand() % 256);
-    //         image_glob[(y*width+x)*3+2] = (rand() % 256);
+//     // char data[height][width][3];
+//     // for( size_t y = 0; y < 2*height + 1; ++y )
+//     // {
+//     //     for( size_t x = 0; x < 2* width + 1; ++x )
+//     //     {
+//     //         // image_glob[y][x][0] = ( rand() % 256 ) ;//* 256 * 256 * 256;
+//     //         // image_glob[y][x][1] = ( rand() % 256 ) ;//* 256 * 256 * 256;
+//     //         // data[y][x][2] = ( rand() % 256 ) ;//* 256 * 256 * 256;
+//     //         image_glob[(y*width+x)*3+0] = (rand() % 256);
+//     //         image_glob[(y*width+x)*3+1] = (rand() % 256);
+//     //         image_glob[(y*width+x)*3+2] = (rand() % 256);
 
-    //     }
-    // }
+//     //     }
+//     // }
 
 
-    // for(int i=0; i<(2*height+1)*(2*width+1)*3;i++){
-    // 	if(i%3==0){
-    // 		cout<<endl;
-    // 	}
-    // 	cout<<(image_glob[i])<<" ";
-    // }
+//     // for(int i=0; i<(2*height+1)*(2*width+1)*3;i++){
+//     // 	if(i%3==0){
+//     // 		cout<<endl;
+//     // 	}
+//     // 	cout<<(image_glob[i])<<" ";
+//     // }
 
-    glDrawPixels( 2*width+1, 2*height+1, GL_RGB, GL_UNSIGNED_BYTE, image_glob );
+//     glDrawPixels( 2*width+1, 2*height+1, GL_RGB, GL_UNSIGNED_BYTE, image_glob );
 
-    glutSwapBuffers();
-}
+//     glutSwapBuffers();
+// }
 
 int main(int argc, char **argv){
-		// Point_3d eye(0,0,0);
-		// Point_3d dirn(0,0,1.0);
-		// Point_3d pt1(2,0,1);
-		// Point_3d pt2(-2,0,1);
-		// Point_3d pt3(0,4,1);
+	
+	ifstream ifs;
+	ifs.open(argv[1]);
 
-		// Triangle* t = new Triangle(pt1,pt2,pt3);
-		// Plane pl = t->p;
-		// Sphere* s = new Sphere(pt1,0.1);
+	if (!ifs) {
+        cout << "Unable to open file";
+        exit(1); // terminate with error
+    }
 
-		// Line l(eye,dirn);
-		// Point_3d p = closest_intersection(l,objects);
-		// cout << p.x << " " << p.y << " " << p.z << endl;
-
-	Color k(0.5,0.5,0.5);
-	Color k0(0,0,0);
-	Plane* wall1 = new Plane(1,0,0,0,k,k,k,k0,k0,2);
-	Plane* wall2 = new Plane(0,1,0,0,k,k,k,k0,k0,2);
-	Plane* wall3 = new Plane(0,0,1,0,k,k,k,k0,k0,2);
-	Plane* wall4 = new Plane(1,0,0,-10000,k,k,k,k0,k0,2);
-	Plane* wall5 = new Plane(0,1,0,-10000,k,k,k,k0,k0,2);
-	Plane* wall6 = new Plane(0,0,1,-10000,k,k,k,k0,k0,2);
-
-	Color k1(0.2,0.8,0.2);
-	Color k2(0.7,0.7,0.7);
-	Sphere* ball = new Sphere(Point_3d(5000,5000,500), 500, k,k,k,k0,k0,2);
-	Rectangle* mirror = new Rectangle(Point_3d(2000,9990,8000),Point_3d(8000,9990,8000),Point_3d(8000,9990,2000),Point_3d(2000,9990,2000),k0,k0,k0,k2,k2,2);
-	// Point_source* light = new Point_source(Point_3d(5000,5000,10000), Color(255,255,255));
-	// Point_source* light2 = new Point_source(Point_3d(5000,9800,5000), Color(255,255,255));
-	Point_source* light3 = new Point_source(Point_3d(9800,5000,8000), Color(0,255,255));
-	Point_source* light4 = new Point_source(Point_3d(200,5000,8000), Color(255,255,0));
+    Point_3d eye;
+    float E;
+    Point_3d n;
+    ifs >> eye.x >> eye.y >> eye.z >> E >> n.x >> n.y >> n.z;
+    n.normalize();
 
 	std::vector<Object*> objects;
-	objects.push_back(wall1);
-	objects.push_back(wall2);
-	objects.push_back(wall3);
-	objects.push_back(wall4);
-	objects.push_back(wall5);
-	objects.push_back(wall6);
-	objects.push_back(ball);
-	objects.push_back(mirror);
-
 	std::vector<Light*> lights;
-	// lights.push_back(light);
-	// lights.push_back(light2);
-	lights.push_back(light3);
-	lights.push_back(light4);
 
-	Point_3d eye(5000,500,9500);
-	Point_3d dirn = eye.subtract(Point_3d(5000,10000,0)).multiply(-1);
-	dirn.normalize();
-	
-    // image_glob = new unsigned int [(2*height+1)*(2*width+1)*3];
+    while(!ifs.eof()){
+    	string type;
+    	ifs >> type;
 
-	click(objects, lights, eye, 500, dirn);
-	
-	// cout<<"YAYYY"<<endl;
-	
-	// glutInit( &argc, argv );
- //    glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE );
- //    glutInitWindowSize( 2*width+1, 2*height+1 );
- //    glutCreateWindow( "GLUT" );
- //    glutDisplayFunc( display );
- //    glutMainLoop();
+    	if(type == "POINT SOURCE"){
+    		Color intn;
+    		Point_3d loc;
+    		ifs >> intn.r >> intn.g >> intn.b >> loc.x >> loc.y >> loc.z;
+    		lights.push_back(new Point_source(loc, intn));
+    	}
+    	if(type == "DIRECTION SOURCE"){
+    		Color intn;
+    		Point_3d dirn;
+    		ifs >> intn.r >> intn.g >> intn.b >> dirn.x >> dirn.y >> dirn.z;
+    		dirn.normalize();
+    		lights.push_back(new Direction_source(dirn, intn));	
+    	}
+    	if(type == "SPHERE"){
+    		Point_3d centre;
+    		float r;
+    		Color ks;
+    		Color kd;
+    		Color ka;
+    		Color kr;
+    		Color kt;
+    		int n_spec;
+    		ifs >> centre.x >> centre.y >> centre.z >> r;
+    		ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b >> n_spec; 
+    		objects.push_back(new Sphere(centre,r,ks, kd, ka, kr, kt , n_spec));
+    	}
+    	if(type == "TRIANGLE"){
+    		Point_3d p1;
+    		Point_3d p2;
+    		Point_3d p3;
+    		Color ks;
+    		Color kd;
+    		Color ka;
+    		Color kr;
+    		Color kt;
+    		int n_spec;
+    		ifs >> p1.x>>p1.y>>p1.z;
+    		ifs >> p2.x>>p2.y>>p2.z;
+    		ifs >> p3.x>>p3.y>>p3.z;
+    		ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b >> n_spec; 
+    		objects.push_back(new Triangle(p1,p2,p3,ks, kd, ka, kr, kt , n_spec));
+    	}
+    	if(type == "PLANE"){
+    		float a,b,c,d;
+    		Color ks;
+    		Color kd;
+    		Color ka;
+    		Color kr;
+    		Color kt;
+    		int n_spec;
+    		ifs >> a >> b >> c >> d;
+    		ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b >> n_spec; 
+    		objects.push_back(new Plane(a,b,c,d,ks, kd, ka, kr, kt , n_spec));
+    	}
+    	if(type == "RECTANGLE"){
+    		Point_3d p1;
+    		Point_3d p2;
+    		Point_3d p3;
+    		Point_3d p4;    	
+    		Color ks;
+    		Color kd;
+    		Color ka;
+    		Color kr;
+    		Color kt;
+    		int n_spec;
+    		ifs >> p1.x>>p1.y>>p1.z;
+    		ifs >> p2.x>>p2.y>>p2.z;
+    		ifs >> p3.x>>p3.y>>p3.z;
+    		ifs >> p4.x>>p4.y>>p4.z;
+    		ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b >> n_spec; 
+    		objects.push_back(new Rectangle(p1,p2,p3,p4,ks, kd, ka, kr, kt , n_spec));
+    	}
+    	// if(type == "QUADRIC"){
+    	// 	Color ks;
+    	// 	Color kd;
+    	// 	Color ka;
+    	// 	Color kr;
+    	// 	Color kt;
+    	// 	ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b; 
+    	// }
+    	if(type == "CIRCLE"){
+    		Point_3d centre;
+    		float r;
+    		Plane p;
+    		Color ks;
+    		Color kd;
+    		Color ka;
+    		Color kr;
+    		Color kt;
+    		int n_spec;
+    		ifs >> centre.x >> centre.y >> centre.z >> r;
+    		ifs >> p.a >> p.b >> p.c >> p.d;
+    		ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b>>n_spec;
+    		objects.push_back(new Circle(centre,r,p,ks, kd, ka, kr, kt , n_spec)); 
+    	}
+    }
 
-	// cout<<dirn<<endl;
+    click(objects, lights, eye, E, n);
 
-	return 0;
+	return 0;	
 }
