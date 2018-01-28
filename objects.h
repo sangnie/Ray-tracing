@@ -108,8 +108,11 @@ class Object{
 	// Color intensity;
 	Color ks;
 	Color kd;
+    Color ka;
+    Color kr;
+    Color kt;
+
 	int n_spec;
-	Color ka;
 	// Object(){}
 	// virtual ~Object(){}
 	virtual Point_3d intersection(Line l) =0;
@@ -121,13 +124,15 @@ class Sphere : public Object{
     Point_3d centre;
     float radius;
 
-    Sphere(Point_3d p, float r, Color ks, Color kd, Color ka, int n_spec){
+    Sphere(Point_3d p, float r, Color ks, Color kd, Color ka, Color kr, Color kt, int n_spec){
         this->centre = p;
         this->radius = r;
         this->type = SPHERE;
         this->ks = ks;
         this->kd = kd;
         this->ka = ka;
+        this->kr = kr;
+        this->kt = kt;
         this->n_spec = n_spec;
     }
     Point_3d intersection(Line l);
@@ -150,7 +155,7 @@ class Plane : public Object{
     	this->type = PLANE;
     }
 
-    Plane(float x, float y, float z, float w, Color ks, Color kd, Color ka, int n_spec){
+    Plane(float x, float y, float z, float w, Color ks, Color kd, Color ka, Color kr, Color kt, int n_spec){
         this->a = x;
         this->b = y;
         this->c = z;
@@ -159,6 +164,8 @@ class Plane : public Object{
         this->ks = ks;
         this->kd = kd;
         this->ka = ka;
+        this->kr = kr;
+        this->kt = kt;
         this->n_spec = n_spec;
     }
 
@@ -187,18 +194,20 @@ class Triangle : public Object{
        	float c = u.x*v.y - u.y*v.x;
        	float d = -1*(a*p1.x + b*p1.y + c*p1.z);
 
-       	Plane p(a,b,c,d,ks,kd,ka,n_spec);
+       	Plane p(a,b,c,d,ks,kd,ka,kr,kt,n_spec);
        	this->p = p;
        	this->type = TRIANGLE;
     }
 
-    Triangle(Point_3d p1, Point_3d p2, Point_3d p3, Color ks, Color kd, Color ka, int n_spec){
+    Triangle(Point_3d p1, Point_3d p2, Point_3d p3, Color ks, Color kd, Color ka, Color kr, Color kt, int n_spec){
         this->pt1 = p1;
         this->pt2 = p2;
         this->pt3 = p3;
         this->ks = ks;
         this->kd = kd;
         this->ka = ka;
+        this->kr = kr;
+        this->kt = kt;
         this->n_spec = n_spec;
 
         Point_3d u = p3.subtract(p1);
@@ -209,7 +218,7 @@ class Triangle : public Object{
        	float c = u.x*v.y - u.y*v.x;
        	float d = -1*(a*p1.x + b*p1.y + c*p1.z);
 
-       	Plane p(a,b,c,d,ks,kd,ka,n_spec);
+       	Plane p(a,b,c,d,ks,kd,ka,kr,kt,n_spec);
        	this->p = p;
        	this->type = TRIANGLE;
     }
@@ -226,7 +235,7 @@ class Rectangle : public Object{
     Point_3d pt4;
     Plane p;
 
-    Rectangle(Point_3d p1, Point_3d p2, Point_3d p3, Point_3d p4, Color ks, Color kd, Color ka, int n_spec){
+    Rectangle(Point_3d p1, Point_3d p2, Point_3d p3, Point_3d p4, Color ks, Color kd, Color ka, Color kr, Color kt, int n_spec){
         this->pt1 = p1;
         this->pt2 = p2;
         this->pt3 = p3;
@@ -234,6 +243,8 @@ class Rectangle : public Object{
         this->ks = ks;
         this->kd = kd;
         this->ka = ka;
+        this->kr = kr;
+        this->kt = kt;
         this->n_spec = n_spec;
 
         Point_3d u = p3.subtract(p1);
@@ -244,7 +255,7 @@ class Rectangle : public Object{
        	float c = u.x*v.y - u.y*v.x;
        	float d = -1*(a*p1.x + b*p1.y + c*p1.z);
 
-       	Plane p(a,b,c,d,ks,kd,ka,n_spec);
+       	Plane p(a,b,c,d,ks,kd,ka,kr,kt,n_spec);
        	this->p = p;
        	this->type = RECTANGLE;
     }

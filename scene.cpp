@@ -11,8 +11,8 @@
 using namespace std;
 
 Color Ambient_Intensity(80,80,80);
-Color k_reflection(0.7,0.7,0.7);
-Color k_transmission(0.5,0.5,0.5);
+// Color k_reflection(0.7,0.7,0.7);
+// Color k_transmission(0.5,0.5,0.5);
 int MAX_DEPTH = 1;
 const int width = 250;
 const int height = 250;
@@ -139,19 +139,22 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 	// ADD REFLECTION COMP
 	if(depth <= MAX_DEPTH)
 	{
-		Point_3d incident = l.rd.multiply(-1);
-		incident.normalize();
-		Point_3d normal_at_poi = (*nearest).normal(closest);
-		if(incident.dot(normal_at_poi) < 0 )
+		if((*nearest).kr.r > 0.01 || (*nearest).kr.g > 0.01 || (*nearest).kr.b > 0.01)
 		{
-			normal_at_poi = normal_at_poi.multiply(-1);
+			Point_3d incident = l.rd.multiply(-1);
+			incident.normalize();
+			Point_3d normal_at_poi = (*nearest).normal(closest);
+			if(incident.dot(normal_at_poi) < 0 )
+			{
+				normal_at_poi = normal_at_poi.multiply(-1);
+			}
+			Point_3d reflected_direction = incident.reflected(normal_at_poi);
+			reflected_direction.normalize();
+			Line reflected(closest,reflected_direction);
+			refl = illumination(reflected, objects, sources, depth+1,i,j);	
 		}
-		Point_3d reflected_direction = incident.reflected(normal_at_poi);
-		reflected_direction.normalize();
-		Line reflected(closest,reflected_direction);
-		refl = illumination(reflected, objects, sources, depth+1,i,j);
 	}
-	refl = refl.multiply(k_reflection);
+	refl = refl.multiply((*nearest).kr);
 
 	final = final.add(refl);
 
@@ -288,17 +291,18 @@ int main(int argc, char **argv){
 		// cout << p.x << " " << p.y << " " << p.z << endl;
 
 	Color k(0.5,0.5,0.5);
-	Plane* wall1 = new Plane(1,0,0,0,k,k,k,2);
-	Plane* wall2 = new Plane(0,1,0,0,k,k,k,2);
-	Plane* wall3 = new Plane(0,0,1,0,k,k,k,2);
-	Plane* wall4 = new Plane(1,0,0,-10000,k,k,k,2);
-	Plane* wall5 = new Plane(0,1,0,-10000,k,k,k,2);
-	Plane* wall6 = new Plane(0,0,1,-10000,k,k,k,2);
+	Color k0(0,0,0);
+	Plane* wall1 = new Plane(1,0,0,0,k,k,k,k0,k0,2);
+	Plane* wall2 = new Plane(0,1,0,0,k,k,k,k0,k0,2);
+	Plane* wall3 = new Plane(0,0,1,0,k,k,k,k0,k0,2);
+	Plane* wall4 = new Plane(1,0,0,-10000,k,k,k,k0,k0,2);
+	Plane* wall5 = new Plane(0,1,0,-10000,k,k,k,k0,k0,2);
+	Plane* wall6 = new Plane(0,0,1,-10000,k,k,k,k0,k0,2);
 
 	Color k1(0.2,0.8,0.2);
-	Color k0(0,0,0);
-	Sphere* ball = new Sphere(Point_3d(5000,5000,500), 500, k,k,k,2);
-	Rectangle* mirror = new Rectangle(Point_3d(2000,9990,8000),Point_3d(8000,9990,8000),Point_3d(8000,9990,2000),Point_3d(2000,9990,2000),k0,k0,k0,2);
+	Color k2(0.7,0.7,0.7);
+	Sphere* ball = new Sphere(Point_3d(5000,5000,500), 500, k,k,k,k0,k0,2);
+	Rectangle* mirror = new Rectangle(Point_3d(2000,9990,8000),Point_3d(8000,9990,8000),Point_3d(8000,9990,2000),Point_3d(2000,9990,2000),k0,k0,k0,k2,k2,2);
 	// Point_source* light = new Point_source(Point_3d(5000,5000,10000), Color(255,255,255));
 	// Point_source* light2 = new Point_source(Point_3d(5000,9800,5000), Color(255,255,255));
 	Point_source* light3 = new Point_source(Point_3d(9800,5000,8000), Color(0,255,255));
