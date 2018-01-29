@@ -13,7 +13,7 @@ using namespace std;
 Color Ambient_Intensity(80,80,80);
 // Color k_reflection(0.7,0.7,0.7);
 // Color k_transmission(0.5,0.5,0.5);
-int MAX_DEPTH = 2;
+int MAX_DEPTH = 1;
 const int width = 250;
 const int height = 250;
 int image_glob[2*height + 1][2*width + 1][3];
@@ -379,8 +379,8 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
         img << endl;
     }
 
-    for(int i = 0; i<=2*height ; i++){
-		for(int j = 0 ; j<=2*width ; j++){
+	for(int j = 2*width; j>=0 ; j--){
+	    for(int i = 0; i<=2*height ; i++){
     		int tempr = (int)image_glob[i][j][0] + (int)anti_alias[i][j][0] + (int)anti_alias[i][j+1][0] + (int)anti_alias[i+1][j][0] + (int)anti_alias[i+1][j+1][0];
     		tempr = tempr/5;
     		int tempg = (int)image_glob[i][j][1] + (int)anti_alias[i][j][1] + (int)anti_alias[i][j+1][1] + (int)anti_alias[i+1][j][1] + (int)anti_alias[i+1][j+1][1];
@@ -402,6 +402,97 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
 
 
     img.close();
+}
+
+int main(int argc, char **argv){
+	// Point_3d eye(0,0,0);
+	// Point_3d dirn(0,0,1.0);
+	// Point_3d pt1(2,0,1);
+	// Point_3d pt2(-2,0,1);
+	// Point_3d pt3(0,4,1);
+
+	// Triangle* t = new Triangle(pt1,pt2,pt3);
+	// Plane pl = t->p;
+	// Sphere* s = new Sphere(pt1,0.1);
+
+	// Line l(eye,dirn);
+	// Point_3d p = closest_intersection(l,objects);
+	// cout << p.x << " " << p.y << " " << p.z << endl;
+
+	Color k(0.5,0.5,0.5);
+	Color k0(0,0,0);
+	Color k1(0.2,0.8,0.2);
+	Color k2(0.7,0.7,0.7);
+	Plane* wall1 = new Plane(1,0,0,0,k,k,k,k0,k0,2);
+	Plane* wall2 = new Plane(0,1,0,0,k,k,k,k0,k0,2);
+	Plane* wall3 = new Plane(0,0,1,0,k,k,k,k0,k0,2);
+	Plane* wall4 = new Plane(1,0,0,-10000,k,k,k,k0,k0,2);
+	Plane* wall5 = new Plane(0,1,0,-10000,k,k,k,k0,k0,2);
+	Plane* wall6 = new Plane(0,0,1,-10000,k,k,k,k0,k0,2);
+
+	Rectangle* box1 = new Rectangle(Point_3d(6000,8000,0),Point_3d(7000,8000,0),Point_3d(7000,8000,1000),Point_3d(6000,8000,1000),k1,k1,k1,k0,k0,2);
+	Rectangle* box2 = new Rectangle(Point_3d(6000,7000,0),Point_3d(7000,7000,0),Point_3d(7000,7000,1000),Point_3d(6000,7000,1000),k1,k1,k1,k0,k0,2);
+	Rectangle* box3 = new Rectangle(Point_3d(6000,8000,0),Point_3d(6000,7000,0),Point_3d(6000,7000,1000),Point_3d(6000,8000,1000),k1,k1,k1,k0,k0,2);
+	Rectangle* box4 = new Rectangle(Point_3d(7000,8000,0),Point_3d(7000,7000,0),Point_3d(7000,7000,1000),Point_3d(7000,8000,1000),k1,k1,k1,k0,k0,2);
+
+	Sphere* ball = new Sphere(Point_3d(5000,5000,500), 500, k,k,k,k0,k0,2);
+	Rectangle* mirror1 = new Rectangle(Point_3d(2000,9990,8000),Point_3d(8000,9990,8000),Point_3d(8000,9990,2000),Point_3d(2000,9990,2000),k0,k0,k0,k2,k2,2);
+	Rectangle* mirror2 = new Rectangle(Point_3d(3000,6000,0),Point_3d(3000,6000,3000),Point_3d(4000,4000,3000),Point_3d(4000,4000,0),k0,k0,k0,k2,k2,2);
+
+	// Point_source* light = new Point_source(Point_3d(5000,5000,10000), Color(255,255,255));
+	// Point_source* light2 = new Point_source(Point_3d(5000,9800,5000), Color(255,255,255));
+	Point_source* light3 = new Point_source(Point_3d(9800,5000,8000), Color(0,255,255));
+	Point_source* light4 = new Point_source(Point_3d(200,5000,8000), Color(255,255,0));
+
+	Point_3d sphere_centre(5000,5000,2000);
+	Spotlight* light5 = new Spotlight(Point_3d(9990,5000,8000), sphere_centre.subtract(Point_3d(9990,5000,8000)), 0.97 ,Color(255,255,0));
+
+	std::vector<Object*> objects;
+	objects.push_back(wall1);
+	objects.push_back(wall2);
+	objects.push_back(wall3);
+	objects.push_back(wall4);
+	objects.push_back(wall5);
+	objects.push_back(wall6);
+	objects.push_back(ball);
+	objects.push_back(mirror1);
+	objects.push_back(mirror2);
+	objects.push_back(box1);
+	objects.push_back(box2);
+	objects.push_back(box3);
+	objects.push_back(box4);
+	
+
+	std::vector<Light*> lights;
+	// lights.push_back(light);
+	// lights.push_back(light2);
+	lights.push_back(light3);
+	lights.push_back(light4);
+	// lights.push_back(light5);
+
+	// cout<<"spot"<<light5->type<<" "<<light5->direction<<" "<<light5->intensity<<" "<<light5->location<<" "<<light5->dot_min<<endl;
+
+
+	Point_3d eye(5000,500,9500);
+	Point_3d dirn = eye.subtract(Point_3d(5000,10000,0)).multiply(-1);
+	dirn.normalize();
+	
+    // image_glob = new unsigned int [(2*height+1)*(2*width+1)*3];
+
+	click(objects, lights, eye, 500, dirn);
+	
+	// cout<<"YAYYY"<<endl;
+	
+	// glutInit( &argc, argv );
+ //    glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE );
+ //    glutInitWindowSize( 2*width+1, 2*height+1 );
+ //    glutCreateWindow( "GLUT" );
+ //    glutDisplayFunc( display );
+ //    glutMainLoop();
+
+	// cout<<dirn<<endl;
+
+	return 0;
 }
 
 // void display()
@@ -565,94 +656,3 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
 
 // 	return 0;	
 // }
-
-int main(int argc, char **argv){
-	// Point_3d eye(0,0,0);
-	// Point_3d dirn(0,0,1.0);
-	// Point_3d pt1(2,0,1);
-	// Point_3d pt2(-2,0,1);
-	// Point_3d pt3(0,4,1);
-
-	// Triangle* t = new Triangle(pt1,pt2,pt3);
-	// Plane pl = t->p;
-	// Sphere* s = new Sphere(pt1,0.1);
-
-	// Line l(eye,dirn);
-	// Point_3d p = closest_intersection(l,objects);
-	// cout << p.x << " " << p.y << " " << p.z << endl;
-
-	Color k(0.5,0.5,0.5);
-	Color k0(0,0,0);
-	Color k1(0.2,0.8,0.2);
-	Color k2(0.7,0.4,0.4);
-	Plane* wall1 = new Plane(1,0,0,0,k,k,k,k0,k0,2);
-	Plane* wall2 = new Plane(0,1,0,0,k,k,k,k0,k0,2);
-	Plane* wall3 = new Plane(0,0,1,0,k,k,k,k0,k0,2);
-	Plane* wall4 = new Plane(1,0,0,-10000,k,k,k,k0,k0,2);
-	Plane* wall5 = new Plane(0,1,0,-10000,k,k,k,k0,k0,2);
-	Plane* wall6 = new Plane(0,0,1,-10000,k,k,k,k0,k0,2);
-
-	Rectangle* box1 = new Rectangle(Point_3d(6000,8000,0),Point_3d(7000,8000,0),Point_3d(7000,8000,1000),Point_3d(6000,8000,1000),k2,k2,k2,k0,k0,2);
-	Rectangle* box2 = new Rectangle(Point_3d(6000,7000,0),Point_3d(7000,7000,0),Point_3d(7000,7000,1000),Point_3d(6000,7000,1000),k2,k2,k2,k0,k0,2);
-	Rectangle* box3 = new Rectangle(Point_3d(6000,8000,0),Point_3d(6000,7000,0),Point_3d(6000,7000,1000),Point_3d(6000,8000,1000),k2,k2,k2,k0,k0,2);
-	Rectangle* box4 = new Rectangle(Point_3d(7000,8000,0),Point_3d(7000,7000,0),Point_3d(7000,7000,1000),Point_3d(7000,8000,1000),k2,k2,k2,k0,k0,2);
-
-	Sphere* ball = new Sphere(Point_3d(5000,5000,500), 500, k2,k2,k2,k0,k0,2);
-	Rectangle* mirror1 = new Rectangle(Point_3d(2000,9990,8000),Point_3d(8000,9990,8000),Point_3d(8000,9990,2000),Point_3d(2000,9990,2000),k0,k0,k0,k2,k2,2);
-	Rectangle* mirror2 = new Rectangle(Point_3d(3000,6000,0),Point_3d(3000,6000,3000),Point_3d(4000,4000,3000),Point_3d(4000,4000,0),k0,k0,k0,k2,k2,2);
-
-	// Point_source* light = new Point_source(Point_3d(5000,5000,10000), Color(255,255,255));
-	// Point_source* light2 = new Point_source(Point_3d(5000,9800,5000), Color(255,255,255));
-	Point_source* light3 = new Point_source(Point_3d(9800,5000,8000), Color(0,255,255));
-	Point_source* light4 = new Point_source(Point_3d(200,5000,8000), Color(255,255,0));
-
-	Point_3d sphere_centre(5000,5000,2000);
-	Spotlight* light5 = new Spotlight(Point_3d(9990,5000,8000), sphere_centre.subtract(Point_3d(9990,5000,8000)), 0.97 ,Color(255,255,0));
-
-	std::vector<Object*> objects;
-	objects.push_back(wall1);
-	objects.push_back(wall2);
-	objects.push_back(wall3);
-	objects.push_back(wall4);
-	objects.push_back(wall5);
-	objects.push_back(wall6);
-	objects.push_back(ball);
-	objects.push_back(mirror1);
-	objects.push_back(mirror2);
-	objects.push_back(box1);
-	objects.push_back(box2);
-	objects.push_back(box3);
-	objects.push_back(box4);
-	
-
-	std::vector<Light*> lights;
-	// lights.push_back(light);
-	// lights.push_back(light2);
-	lights.push_back(light3);
-	lights.push_back(light4);
-	// lights.push_back(light5);
-
-	// cout<<"spot"<<light5->type<<" "<<light5->direction<<" "<<light5->intensity<<" "<<light5->location<<" "<<light5->dot_min<<endl;
-
-
-	Point_3d eye(5000,500,9500);
-	Point_3d dirn = eye.subtract(Point_3d(5000,10000,0)).multiply(-1);
-	dirn.normalize();
-	
-    // image_glob = new unsigned int [(2*height+1)*(2*width+1)*3];
-
-	click(objects, lights, eye, 500, dirn);
-	
-	// cout<<"YAYYY"<<endl;
-	
-	// glutInit( &argc, argv );
- //    glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE );
- //    glutInitWindowSize( 2*width+1, 2*height+1 );
- //    glutCreateWindow( "GLUT" );
- //    glutDisplayFunc( display );
- //    glutMainLoop();
-
-	// cout<<dirn<<endl;
-
-	return 0;
-}
