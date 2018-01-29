@@ -114,7 +114,7 @@ class Object{
     Color ka;
     Color kr;
     Color kt;
-
+    float index;
 	int n_spec;
 	// Object(){}
 	// virtual ~Object(){}
@@ -127,7 +127,7 @@ class Sphere : public Object{
     Point_3d centre;
     float radius;
 
-    Sphere(Point_3d p, float r, Color ks, Color kd, Color ka, Color kr, Color kt, int n_spec){
+    Sphere(Point_3d p, float r, Color ks, Color kd, Color ka, Color kr, Color kt, int n_spec, int index){
         this->centre = p;
         this->radius = r;
         this->type = SPHERE;
@@ -137,6 +137,7 @@ class Sphere : public Object{
         this->kr = kr;
         this->kt = kt;
         this->n_spec = n_spec;
+        this->index = index;
     }
     Point_3d intersection(Line l);
     Point_3d normal(Point_3d p);

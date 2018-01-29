@@ -83,8 +83,9 @@ Point_3d Sphere::intersection(Line l1){
 			float t_hc = sqrt(r*r - dsqr);
 			float t = t_ca - t_hc;
 
-			if(t < 0.000001 && t > -0.0000001){
-				throw "Sphere: intersecting at eye";
+			if(t < 0.001 && t > -0.001){
+				// throw "Sphere: intersecting at eye";
+				t = t_ca + t_hc;
 			}
 			return Point_3d(l1.ro.x + t*l1.rd.x, l1.ro.y + t*l1.rd.y, l1.ro.z + t*l1.rd.z);
 		}
@@ -312,10 +313,11 @@ Point_3d Point_3d::reflected(Point_3d normal)
 // 	Point_3d dir(0,0,1);
 // 	Line l(eye,dir);
 
-// 	Triangle t(Point_3d(2,0,4), Point_3d(-2,0,4), Point_3d(0,4,4));
-// 	Rectangle r(Point_3d(2,1,4), Point_3d(-2,1,4), Point_3d(2,3,4), Point_3d(-2,3,4));
-// 	Sphere s(Point_3d(0,0,4), 4);
-// 	Plane p = t.p;
+// 	// Triangle t(Point_3d(2,0,4), Point_3d(-2,0,4), Point_3d(0,4,4));
+// 	// Rectangle r(Point_3d(2,1,4), Point_3d(-2,1,4), Point_3d(2,3,4), Point_3d(-2,3,4));
+// 	Color k(0,0,0);
+// 	Sphere s(Point_3d(0,4,3), 5,k,k,k,k,k,2);
+// 	// Plane p = t.p;
 
 // 	try{
 // 		cout << s.intersection(l) << endl;
