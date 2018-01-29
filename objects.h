@@ -295,8 +295,9 @@ class Direction_source : public Light{
 	// Point_3d direction;
 	// Color intensity;
 
-	Direction_source(Point_3d p, Color i){
-		this->direction = p;
+	Direction_source(Point_3d dir, Color i){
+		dir.normalize();
+		this->direction = dir;
 		this->intensity = i;
 		this->type = LIGHT_DIREC;
 	}	
