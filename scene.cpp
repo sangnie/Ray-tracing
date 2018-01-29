@@ -7,7 +7,7 @@
 #include <vector>
 #include <limits>
 #include <typeinfo>
-#include <GL/glut.h>
+// #include <GL/glut.h>
 using namespace std;
 
 Color Ambient_Intensity(80,80,80);
@@ -16,7 +16,8 @@ Color Ambient_Intensity(80,80,80);
 int MAX_DEPTH = 0;
 const int width = 250;
 const int height = 250;
-unsigned char image_glob[2*height + 1][2*width + 1][3];
+int image_glob[2*height + 1][2*width + 1][3];
+int anti_alias[2*height + 2][2*width + 2][3];
 
 float distance(Point_3d p1, Point_3d p2){
 	return sqrt((p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y) + (p1.z - p2.z)*(p1.z - p2.z));
@@ -33,7 +34,7 @@ Color specular(Point_3d light, Color intensity, Point_3d normal, Color ks, int n
 	return intensity.multiply(ks.multiply(pow(abs(ref.dot(view)),n_spec)));
 }
 
-Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int depth, int i, int j){
+Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int depth, float i, float j){
 
 	Color final(0,0,0);
 
@@ -277,6 +278,39 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
     ofstream img;
     img.open("image.ppm");
     img << "P3\n" << 2*width + 1 << " " << 2*height+1 << "\n255\n";
+    
+    /////////// Normal fn
+    // for(int i = height; i>=-height; i--){
+	   //  for(int j = -width; j<=width; j++){
+		  //   // cout<<"YAYYY"<<i<<" " << j<<endl;
+    //         Point_3d ray = (eye_.subtract((Point_3d(i,j,0)))).multiply(-1);
+    //         // cout<<ray<<endl;
+    //         ray = v_to_w(ray, camera, u,v,n);
+    //         ray.normalize();
+    //         Line l(eye,ray);
+    //         // cout<<ray<<endl;
+    //         // image[i][j] = illumination(l, objects, sources, 0);
+    //         Color temp;
+    //         temp = illumination(l, objects, sources, 0, i, j);
+    //         // cout<< i << " " << j << " " << temp << endl;
+    //         image_glob[i + height][j + width][0] = (unsigned char)temp.r;
+    //         image_glob[i + height][j + width][1] = (unsigned char)temp.g;
+    //         image_glob[i + height][j + width][2] = (unsigned char)temp.b;
+    //         img << (temp.r<255?(int) temp.r : 255) << " ";
+    //         img << (temp.g<255?(int) temp.g : 255) << " ";
+    //         img << (temp.b<255?(int) temp.b : 255) << " ";
+    //         // if(temp.r < 50 && temp.g < 50 && temp.b < 50){
+    //         // 	cout << i << " " << j << endl;
+    //         // }
+    //         // image_glob[((i+height)*width+(j+width))*3+0] = (int)temp.r;
+    //         // image_glob[((i+height)*width+(j+width))*3+1] = (int)temp.g;
+    //         // image_glob[((i+height)*width+(j+width))*3+2] = (int)temp.b;
+    //     }
+    //     img << endl;
+    // }
+
+
+    ///////// ANTIALIASING
     for(int i = height; i>=-height; i--){
 	    for(int j = -width; j<=width; j++){
 		    // cout<<"YAYYY"<<i<<" " << j<<endl;
@@ -289,13 +323,23 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
             // image[i][j] = illumination(l, objects, sources, 0);
             Color temp;
             temp = illumination(l, objects, sources, 0, i, j);
+
+            // if(i==150 && j==200)
+            // {
+            // 	cout<<"a "<<temp<<endl;
+            // 	cout<<(unsigned char)temp.r;
+            // 	cout<<(unsigned char)temp.g;
+            // 	cout<<(unsigned char)temp.b;
+            // }
+
             // cout<< i << " " << j << " " << temp << endl;
-            image_glob[i + height][j + width][0] = (unsigned char)temp.r;
-            image_glob[i + height][j + width][1] = (unsigned char)temp.g;
-            image_glob[i + height][j + width][2] = (unsigned char)temp.b;
-            img << (temp.r<255?(int) temp.r : 255) << " ";
-            img << (temp.g<255?(int) temp.g : 255) << " ";
-            img << (temp.b<255?(int) temp.b : 255) << " ";
+            image_glob[i + height][j + width][0] = (int)temp.r;
+            image_glob[i + height][j + width][1] = (int)temp.g;
+            image_glob[i + height][j + width][2] = (int)temp.b;
+            // img << (temp.r<255?(int) temp.r : 255) << " ";
+            // img << (temp.g<255?(int) temp.g : 255) << " ";
+            // img << (temp.b<255?(int) temp.b : 255) << " ";
+
             // if(temp.r < 50 && temp.g < 50 && temp.b < 50){
             // 	cout << i << " " << j << endl;
             // }
@@ -305,6 +349,58 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
         }
         img << endl;
     }
+
+    for(int i = -height; i<=height+1; i++){
+	    for(int j = -width; j<=width+1; j++){
+		    // cout<<"YAYYY"<<i<<" " << j<<endl;
+            Point_3d ray = (eye_.subtract((Point_3d(i-0.5,j-0.5,0)))).multiply(-1);
+            // cout<<ray<<endl;
+            ray = v_to_w(ray, camera, u,v,n);
+            ray.normalize();
+            Line l(eye,ray);
+            // cout<<ray<<endl;
+            // image[i][j] = illumination(l, objects, sources, 0);
+            Color temp;
+            temp = illumination(l, objects, sources, 0, i-0.5, j-0.5);
+            // cout<< i << " " << j << " " << temp << endl;
+            anti_alias[i + height][j + width][0] = (int)temp.r;
+            anti_alias[i + height][j + width][1] = (int)temp.g;
+            anti_alias[i + height][j + width][2] = (int)temp.b;
+            // img << (temp.r<255?(int) temp.r : 255) << " ";
+            // img << (temp.g<255?(int) temp.g : 255) << " ";
+            // img << (temp.b<255?(int) temp.b : 255) << " ";
+            // if(temp.r < 50 && temp.g < 50 && temp.b < 50){
+            // 	cout << i << " " << j << endl;
+            // }
+            // image_glob[((i+height)*width+(j+width))*3+0] = (int)temp.r;
+            // image_glob[((i+height)*width+(j+width))*3+1] = (int)temp.g;
+            // image_glob[((i+height)*width+(j+width))*3+2] = (int)temp.b;
+        }
+        img << endl;
+    }
+
+    for(int i = 0; i<=2*height ; i++){
+		for(int j = 0 ; j<=2*width ; j++){
+    		int tempr = (int)image_glob[i][j][0] + (int)anti_alias[i][j][0] + (int)anti_alias[i][j+1][0] + (int)anti_alias[i+1][j][0] + (int)anti_alias[i+1][j+1][0];
+    		tempr = tempr/5;
+    		int tempg = (int)image_glob[i][j][1] + (int)anti_alias[i][j][1] + (int)anti_alias[i][j+1][1] + (int)anti_alias[i+1][j][1] + (int)anti_alias[i+1][j+1][1];
+    		tempg = tempg/5;
+    		int tempb = (int)image_glob[i][j][2] + (int)anti_alias[i][j][2] + (int)anti_alias[i][j+1][2] + (int)anti_alias[i+1][j][2] + (int)anti_alias[i+1][j+1][2];
+    		tempb = tempb/5;
+    		// if(tempr<40 || tempg<40 || tempb<40)
+    		// {
+    		// 	cout<<"W"<<" "<<tempr<<" "<<tempg<<" "<<tempb<<" "<<i<<" "<<j<<endl;
+    		// }
+            img << (tempr<255?(int) tempr : 255) << " ";
+            img << (tempg<255?(int) tempg : 255) << " ";
+            img << (tempb<255?(int) tempb : 255) << " ";
+
+    	}
+
+    }
+
+
+
     img.close();
 }
 
@@ -492,14 +588,14 @@ int main(int argc, char **argv){
 
 	Color k1(0.2,0.8,0.2);
 	Color k2(0.7,0.7,0.7);
-	Sphere* ball = new Sphere(Point_3d(5000,5000,500), 500, k,k,k,k0,k0,2);
+	Sphere* ball = new Sphere(Point_3d(5000,5000,2000), 500, k,k,k,k0,k0,2);
 	Rectangle* mirror = new Rectangle(Point_3d(2000,9990,8000),Point_3d(8000,9990,8000),Point_3d(8000,9990,2000),Point_3d(2000,9990,2000),k0,k0,k0,k2,k2,2);
 	// Point_source* light = new Point_source(Point_3d(5000,5000,10000), Color(255,255,255));
 	// Point_source* light2 = new Point_source(Point_3d(5000,9800,5000), Color(255,255,255));
 	Point_source* light3 = new Point_source(Point_3d(9800,5000,8000), Color(0,255,255));
 	Point_source* light4 = new Point_source(Point_3d(200,5000,8000), Color(255,255,0));
-	Point_3d sphere_centre(5000,5000,500);
-	Spotlight* light5 = new Spotlight(Point_3d(9990,5000,8000), sphere_centre.subtract(Point_3d(9990,5000,8000)), 0.4 ,Color(255,255,0));
+	Point_3d sphere_centre(5000,5000,2000);
+	Spotlight* light5 = new Spotlight(Point_3d(9990,5000,8000), sphere_centre.subtract(Point_3d(9990,5000,8000)), 0.97 ,Color(255,255,0));
 
 	std::vector<Object*> objects;
 	objects.push_back(wall1);
@@ -518,7 +614,7 @@ int main(int argc, char **argv){
 	// lights.push_back(light4);
 	lights.push_back(light5);
 
-	cout<<"spot"<<light5->type<<" "<<light5->direction<<" "<<light5->intensity<<" "<<light5->location<<" "<<light5->dot_min<<endl;
+	// cout<<"spot"<<light5->type<<" "<<light5->direction<<" "<<light5->intensity<<" "<<light5->location<<" "<<light5->dot_min<<endl;
 
 
 	Point_3d eye(5000,500,9500);
