@@ -14,6 +14,7 @@
 #define LIGHT_POINT 6
 #define LIGHT_DIREC 7
 #define LIGHT_SPOT 8
+#define QUADRIC 9
 
 
 class Color
@@ -341,6 +342,44 @@ class Circle : public Object{
 
     Point_3d intersection(Line l1);
     Point_3d normal(Point_3d p);
+};
+
+class Quadric : public Object{
+    public:
+    float a;
+    float b;
+    float c;
+    float d;
+    float e;
+    float f;
+    float g;
+    float h;
+    float i;
+    float j;
+
+    Quadric(float a, float b, float c, float d, float e, float f, float g, float h, float i, float j, Color ks, Color kd, Color ka, Color kr, Color kt, int n_spec){
+        this->a = a;
+        this->b = b;
+        this->c = c;
+        this->d = d;
+        this->e = e;
+        this->f = f;
+        this->g = g;
+        this->h = h;
+        this->i = i;
+        this->j = j;
+        this->ks = ks;
+        this->kd = kd;
+        this->ka = ka;
+        this->kr = kr;
+        this->kt = kt;
+        this->n_spec = n_spec;
+        this->type = QUADRIC;
+    }
+
+    Point_3d intersection(Line l1);
+    Point_3d normal(Point_3d p);
+
 };
 
 #endif

@@ -13,7 +13,7 @@ using namespace std;
 Color Ambient_Intensity(80,80,80);
 // Color k_reflection(0.7,0.7,0.7);
 // Color k_transmission(0.5,0.5,0.5);
-int MAX_DEPTH = 0;
+int MAX_DEPTH = 2;
 const int width = 250;
 const int height = 250;
 unsigned char image_glob[2*height + 1][2*width + 1][3];
@@ -436,14 +436,18 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
 //     		ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b >> n_spec; 
 //     		objects.push_back(new Rectangle(p1,p2,p3,p4,ks, kd, ka, kr, kt , n_spec));
 //     	}
-//     	// if(type == "QUADRIC"){
-//     	// 	Color ks;
-//     	// 	Color kd;
-//     	// 	Color ka;
-//     	// 	Color kr;
-//     	// 	Color kt;
-//     	// 	ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b; 
-//     	// }
+//     	if(type == "QUADRIC"){
+//     		float a,b,c,de,f,g,h,i,j;
+//     		Color ks;
+//     		Color kd;
+//     		Color ka;
+//     		Color kr;
+//     		Color kt;
+//     		int n_spec;
+//     		ifs >> a >> b >> c >> d >>e>>f>>g>>h>>i>>j;
+//     		ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b >> n_spec; 
+//     		Quadric(a, b, c, d, e, f, g, h, i, j, ks, kd, ka, kr,kt,n_spec){
+//     	}
 //     	if(type == "CIRCLE"){
 //     		Point_3d centre;
 //     		float r;
@@ -483,6 +487,8 @@ int main(int argc, char **argv){
 
 	Color k(0.5,0.5,0.5);
 	Color k0(0,0,0);
+	Color k1(0.2,0.8,0.2);
+	Color k2(0.7,0.4,0.4);
 	Plane* wall1 = new Plane(1,0,0,0,k,k,k,k0,k0,2);
 	Plane* wall2 = new Plane(0,1,0,0,k,k,k,k0,k0,2);
 	Plane* wall3 = new Plane(0,0,1,0,k,k,k,k0,k0,2);
@@ -490,16 +496,20 @@ int main(int argc, char **argv){
 	Plane* wall5 = new Plane(0,1,0,-10000,k,k,k,k0,k0,2);
 	Plane* wall6 = new Plane(0,0,1,-10000,k,k,k,k0,k0,2);
 
-	Color k1(0.2,0.8,0.2);
-	Color k2(0.7,0.7,0.7);
-	Sphere* ball = new Sphere(Point_3d(5000,5000,500), 500, k,k,k,k0,k0,2);
-	Rectangle* mirror = new Rectangle(Point_3d(2000,9990,8000),Point_3d(8000,9990,8000),Point_3d(8000,9990,2000),Point_3d(2000,9990,2000),k0,k0,k0,k2,k2,2);
+	Rectangle* box1 = new Rectangle(Point_3d(6000,8000,0),Point_3d(7000,8000,0),Point_3d(7000,8000,1000),Point_3d(6000,8000,1000),k2,k2,k2,k0,k0,2);
+	Rectangle* box2 = new Rectangle(Point_3d(6000,7000,0),Point_3d(7000,7000,0),Point_3d(7000,7000,1000),Point_3d(6000,7000,1000),k2,k2,k2,k0,k0,2);
+	Rectangle* box3 = new Rectangle(Point_3d(6000,8000,0),Point_3d(6000,7000,0),Point_3d(6000,7000,1000),Point_3d(6000,8000,1000),k2,k2,k2,k0,k0,2);
+	Rectangle* box4 = new Rectangle(Point_3d(7000,8000,0),Point_3d(7000,7000,0),Point_3d(7000,7000,1000),Point_3d(7000,8000,1000),k2,k2,k2,k0,k0,2);
+
+	Sphere* ball = new Sphere(Point_3d(5000,5000,500), 500, k2,k2,k2,k0,k0,2);
+	Rectangle* mirror1 = new Rectangle(Point_3d(2000,9990,8000),Point_3d(8000,9990,8000),Point_3d(8000,9990,2000),Point_3d(2000,9990,2000),k0,k0,k0,k2,k2,2);
+	Rectangle* mirror2 = new Rectangle(Point_3d(3000,6000,0),Point_3d(3000,6000,3000),Point_3d(4000,4000,3000),Point_3d(4000,4000,0),k0,k0,k0,k2,k2,2);
 	// Point_source* light = new Point_source(Point_3d(5000,5000,10000), Color(255,255,255));
 	// Point_source* light2 = new Point_source(Point_3d(5000,9800,5000), Color(255,255,255));
 	Point_source* light3 = new Point_source(Point_3d(9800,5000,8000), Color(0,255,255));
 	Point_source* light4 = new Point_source(Point_3d(200,5000,8000), Color(255,255,0));
 	Point_3d sphere_centre(5000,5000,500);
-	Spotlight* light5 = new Spotlight(Point_3d(9990,5000,8000), sphere_centre.subtract(Point_3d(9990,5000,8000)), 0.4 ,Color(255,255,0));
+	Spotlight* light5 = new Spotlight(Point_3d(9990,5000,8000), sphere_centre.subtract(Point_3d(9990,5000,8000)), 0.9 ,Color(255,255,0));
 
 	std::vector<Object*> objects;
 	objects.push_back(wall1);
@@ -509,16 +519,22 @@ int main(int argc, char **argv){
 	objects.push_back(wall5);
 	objects.push_back(wall6);
 	objects.push_back(ball);
-	objects.push_back(mirror);
+	objects.push_back(mirror1);
+	objects.push_back(mirror2);
+	objects.push_back(box1);
+	objects.push_back(box2);
+	objects.push_back(box3);
+	objects.push_back(box4);
+	
 
 	std::vector<Light*> lights;
 	// lights.push_back(light);
 	// lights.push_back(light2);
-	// lights.push_back(light3);
-	// lights.push_back(light4);
-	lights.push_back(light5);
+	lights.push_back(light3);
+	lights.push_back(light4);
+	// lights.push_back(light5);
 
-	cout<<"spot"<<light5->type<<" "<<light5->direction<<" "<<light5->intensity<<" "<<light5->location<<" "<<light5->dot_min<<endl;
+	// cout<<"spot"<<light5->type<<" "<<light5->direction<<" "<<light5->intensity<<" "<<light5->location<<" "<<light5->dot_min<<endl;
 
 
 	Point_3d eye(5000,500,9500);

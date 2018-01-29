@@ -184,6 +184,48 @@ Point_3d Circle::intersection(Line l){
 	}	
 }
 
+Point_3d Quadric::intersection(Line l){
+	float A = this->a;
+	float B = this->b;
+	float C = this->c;
+	float D = this->d;
+	float E = this->e;
+	float F = this->f;
+	float G = this->g;
+	float H = this->h;
+	float I = this->i;
+	float J = this->j;
+	float xo = l.ro.x;
+	float yo = l.ro.y;
+	float zo = l.ro.z;
+	float xd = l.rd.x;
+	float yd = l.rd.y;
+	float zd = l.rd.z;
+	float Aq = A*xd*xd + B*yd*yd + C*zd*zd + D*xd*yd + E*xd*zd + F*yd*zd;
+	float Bq = 2*A*xo*xd + 2*B*yo*yd + 2*C*zo*zd + D*(xo*yd + yo*xd) + E*(xo*zd + zo*xd) + F*(yo*zd + yd*zo) + G*xd + H*yd + I*zd;
+	float Cq = A*xo*xo + B*yo*yo + C*zo*zo + D*xo*yo + E*xo*zo + F*yo*zo + G*xo + H*yo + I*zo + J ;
+	// float Aq = a*l.rd.x*l.rd.x + b*l.rd.y*l.rd.y + c*l.rd.z*l.rd.z + d*l.rd.x*l.rd.y + e*l.rd.x*l.rd.z + f*l.rd.y*l.rd.z;
+
+	float t;
+
+	if(Aq<0.01 && A>-0.01){
+		t = -1 * Cq / Bq;
+	} else {
+		float discriminant = Bq*Bq - 4*Aq*Cq;
+		if(discriminant<0){
+			throw "No intersection";
+		} else {
+			discriminant = sqrt(discriminant);
+			t = (-Bq - discriminant) / (2*Aq);
+			if(t < 0){
+				t = (-Bq + discriminant) / (2*Aq);
+			}
+		}
+	}
+
+    return Point_3d(l.ro.x + t*l.rd.x, l.ro.y + t*l.rd.y, l.ro.z + t*l.rd.z);
+}
+
 void Point_3d::normalize()
 {
 	float mag = pow((this->x),2) + pow((this->y),2) + pow((this->z),2);
@@ -228,6 +270,26 @@ Point_3d Plane::normal(Point_3d p)
 	nor.x = this->a;
 	nor.y = this->b;
 	nor.z = this->c;
+	nor.normalize();
+	return nor;
+}
+
+Point_3d Quadric::normal(Point_3d p){
+	Point_3d nor;
+	float A = this->a;
+	float B = this->b;
+	float C = this->c;
+	float D = this->d;
+	float E = this->e;
+	float F = this->f;
+	float G = this->g;
+	float H = this->h;
+	float I = this->i;
+	float J = this->j;
+	nor.x = 2*A*p.x + D*p.y + E*p.z + G;
+	nor.y = 2*B*p.y + D*p.x + F*p.z + H;
+	nor.z = 2*C*p.z + E*p.x + F*p.y + I;
+
 	nor.normalize();
 	return nor;
 }
