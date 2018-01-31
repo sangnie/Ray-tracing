@@ -307,9 +307,11 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 	// ADD TRANSMISSION COMP
 	if(depth <= MAX_DEPTH && (*nearest).type == SPHERE)
 	{
-		// cout << "YIPEE" << endl;
 		if((*nearest).kt.r > 0.01 || (*nearest).kt.g > 0.01 || (*nearest).kt.b > 0.01)
 		{
+			if(inside){
+				// cout << "WHOOPIEE" << endl;
+			}
 			Point_3d incident = l.rd;
 			Point_3d normal_at_poi = (*nearest).normal(closest);
 			if(incident.dot(normal_at_poi) > 0 )
@@ -317,14 +319,21 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 				normal_at_poi = normal_at_poi.multiply(-1);
 			}
 			// Point_3d reflected_direction = l.reflected(normal_at_poi);
-			float ratio = (inside) ? (*nearest).index : 1/((*nearest).index);
+			float eta = (*nearest).index;
+			float ratio = (inside) ? eta : 1/eta;
 			float cosi = -incident.dot(normal_at_poi);
-			float cost = sqrt(1 - ratio*ratio*(1-(cosi*cosi)));
-			Point_3d trans_dirn = incident.multiply(ratio).add(normal_at_poi.multiply(ratio*cosi - cost));
 
-			trans_dirn.normalize();
-			Line transmitted(closest,trans_dirn);
-			trans = illumination(transmitted, objects, sources, depth+1,!inside);	
+			if(!inside || (cosi*cosi > (1 - (1/(eta*eta))))){
+				// cout << "YIPEE" << endl;
+				float cost = sqrt(1 - ratio*ratio*(1-(cosi*cosi)));
+				Point_3d trans_dirn = (incident.multiply(ratio)).add(normal_at_poi.multiply(ratio*cosi - cost));
+
+				trans_dirn.normalize();
+				Line transmitted(closest,trans_dirn);
+				trans = illumination(transmitted, objects, sources, depth+1,!inside);
+			} else {
+				cout << "daisy" << endl;
+			}
 		}
 	}
 	trans = trans.multiply((*nearest).kt);
@@ -529,6 +538,7 @@ int main(int argc, char **argv){
 	Color k0(0,0,0);
 	Color k1(0.7,0.5,0.7);
 	Color k2(0.7,0.7,0.7);
+	Color k4(0.4,0.4,0.4);
 	Color red(0.8,0.5,0.5);
 	Color yellow(0.4,0.7,0.7);
 	Color pink(0.7,0.5,0.6);
@@ -549,9 +559,9 @@ int main(int argc, char **argv){
 
 
 	Sphere* ball = new Sphere(Point_3d(5000,5000,5000), 500, k1,k1,k1,k0,k0,2,1);
-	Sphere* glass = new Sphere(Point_3d(5000,5000,5000), 500, ksmall,ksmall,ksmall,ksmall,k2,2,1.6);
+	Sphere* glass = new Sphere(Point_3d(7000,7000,3000), 500, yellow,yellow,yellow,ksmall,k0,2,2.6);
 
-	Rectangle* bottom = new Rectangle(Point_3d(0,0,0),Point_3d(0,10000,0),Point_3d(10000,10000,0),Point_3d(10000,0,0),k,k,k,k0,k0,2);
+	Rectangle* bottom = new Rectangle(Point_3d(0,0,0),Point_3d(0,10000,0),Point_3d(10000,10000,0),Point_3d(10000,0,0),red,red,red,k0,k0,2);
 	Rectangle* top = new Rectangle(Point_3d(10000,10000,10000),Point_3d(0,10000,10000),Point_3d(0,0,10000),Point_3d(10000,0,10000),k,k,k,k0,k0,2);
 	Rectangle* left = new Rectangle(Point_3d(0,0,0),Point_3d(0,0,10000),Point_3d(0,10000,10000),Point_3d(0,10000,0),k,k,k,k0,k0,2);
 	Rectangle* right = new Rectangle(Point_3d(10000,0,0),Point_3d(10000,10000,0),Point_3d(10000,10000,10000),Point_3d(10000,0,10000),k,k,k,k0,k0,2);
@@ -571,15 +581,15 @@ int main(int argc, char **argv){
 
 	Quadric* ellipsoid = new Quadric(4,1,1,0,0,0,-40000,-10000,-10000,149750000,k1,k1,k1,k0,k0,2);
 
-	Direction_source* sun = new Direction_source(Point_3d(10,-5,-20),Color(0,255,255)); 
+	Direction_source* sun = new Direction_source(Point_3d(10,-5,-20),Color(255,255,255)); 
 
 	std::vector<Object*> objects;
-	objects.push_back(wall1);
-	objects.push_back(wall2);
-	objects.push_back(wall3);
-	objects.push_back(wall4);
-	objects.push_back(wall5);
-	objects.push_back(wall6);
+	// objects.push_back(wall1);
+	// objects.push_back(wall2);
+	// objects.push_back(wall3);
+	// objects.push_back(wall4);
+	// objects.push_back(wall5);
+	// objects.push_back(wall6);
 	// objects.push_back(ball);
 	objects.push_back(glass);
 	// objects.push_back(mirror1);
@@ -591,11 +601,11 @@ int main(int argc, char **argv){
 	// objects.push_back(ellipsoid);
 
 	objects.push_back(bottom);
-	// objects.push_back(top);
-	objects.push_back(front);
-	objects.push_back(back);
-	objects.push_back(left);
-	objects.push_back(right);
+	// // objects.push_back(top);
+	// objects.push_back(front);
+	// objects.push_back(back);
+	// objects.push_back(left);
+	// objects.push_back(right);
 
 	std::vector<Light*> lights;
 	// lights.push_back(light);
