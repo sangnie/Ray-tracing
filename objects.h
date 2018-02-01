@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ostream>
+#include <vector>
 
 #define CIRCLE 0
 #define SPHERE 1
@@ -15,7 +16,7 @@
 #define LIGHT_DIREC 7
 #define LIGHT_SPOT 8
 #define QUADRIC 9
-
+#define MESH 10
 
 class Color
 {
@@ -92,6 +93,8 @@ class Point_3d{
     friend std::ostream& operator<<(std::ostream &strm, const Point_3d &a);
 }; 
 
+float distance(Point_3d p1, Point_3d p2);
+
 class Line{
     public:
     Point_3d ro;
@@ -116,10 +119,12 @@ class Object{
     Color kt;
     float index;
 	int n_spec;
-	// Object(){}
-	// virtual ~Object(){}
-	virtual Point_3d intersection(Line l) =0;
-	virtual Point_3d normal(Point_3d p) =0;
+    Object* tri;
+    // Object(){}
+    // virtual ~Object(){}
+    virtual Point_3d intersection(Line l) =0;
+    virtual Point_3d normal(Point_3d p) =0;
+
 };
 
 class Sphere : public Object{
@@ -183,6 +188,8 @@ class Triangle : public Object{
     Point_3d pt2;
     Point_3d pt3;
     Plane p;
+
+    Triangle(){};
 
     Triangle(Point_3d p1, Point_3d p2, Point_3d p3){
         this->pt1 = p1;
@@ -382,6 +389,27 @@ class Quadric : public Object{
     Point_3d intersection(Line l1);
     Point_3d normal(Point_3d p);
 
+};
+
+class Mesh : public Object{
+    public:
+    std::vector<Triangle*> triangles;
+    Point_3d normal_;
+
+    Mesh(){
+        this->type = MESH;
+    }
+
+    Mesh(std::vector<Triangle*> tris){
+        this->triangles = tris;
+        this->type = MESH;
+    }
+    
+    Point_3d intersection(Line l1);
+    Point_3d normal(Point_3d p);
+    void add(Triangle* t){
+        triangles.push_back(t);
+    }
 };
 
 #endif

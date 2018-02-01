@@ -3,6 +3,8 @@
 #include <iostream>
 #include "objects.h"
 #include <math.h>
+#include <limits>
+#include <vector>
 using namespace std;
 
 std::ostream& operator<<(std::ostream &strm, const Point_3d &a) {
@@ -24,6 +26,10 @@ std::ostream& operator<<(std::ostream &strm, const Color &a) {
 // std::ostream& operator<<(std::ostream &strm, const Plane &a) {
 // 	return strm << "Plane("<< a.a << "," << a.b << "," << a.c << "," <<a.d << ")";
 // }
+
+float distance(Point_3d p1, Point_3d p2){
+	return sqrt((p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y) + (p1.z - p2.z)*(p1.z - p2.z));
+}
 
 Point_3d Point_3d::add(Point_3d p){
 	Point_3d p1;
@@ -100,11 +106,12 @@ Point_3d Plane::intersection(Line l){
 
 	float vd = a*l.rd.x + b*l.rd.y + c*l.rd.z;
 
-	if(vd < 0.000001 && vd > -0.0000001){
+	if(vd < 0.001 && vd > -0.001){
 		// cout << "yay1" << endl;
 		throw "Plane: Parallel line, No intersection";
 	} else {
 		// cout << l.ro.x << " " << l.ro.y << " " << l.ro.z << endl;
+		// cout << l.ro.x * a<< " " << l.ro.y *b << " " << l.ro.z *c << d<< endl;
 		// cout<< a << " "<<b<<" "<< c<<" "<<d<<endl;
 		float v0 = a*l.ro.x + b*l.ro.y + c*l.ro.z + d;
 		float t = -1 * v0 / vd;
@@ -112,7 +119,7 @@ Point_3d Plane::intersection(Line l){
 		if(t<-0.001){
 			throw "Plane: Behind eye";
 		} else {
-			if(v0 < 0.001 && v0 > -0.001){
+			if((v0 < 0.001 && v0 > -0.001) || (t < 0.01 && t > -0.01)){
 				throw "Plane: intersecting at eye";
 			} else {
 				return Point_3d(l.ro.x + t*l.rd.x, l.ro.y + t*l.rd.y, l.ro.z + t*l.rd.z);
@@ -227,6 +234,46 @@ Point_3d Quadric::intersection(Line l){
     return Point_3d(l.ro.x + t*l.rd.x, l.ro.y + t*l.rd.y, l.ro.z + t*l.rd.z);
 }
 
+Point_3d Mesh::intersection(Line l){
+
+	float min = std::numeric_limits<float>::max();
+	Point_3d closest = l.ro;
+	Triangle *nearest;
+	bool intersecting = false;
+
+	for (std::vector<Triangle*>::iterator it = this->triangles.begin() ; it != this->triangles.end(); ++it){
+		try{
+			Point_3d p = (*it)->intersection(l);
+			intersecting = true;
+			float d = distance(l.ro,p);
+			if(d<min){
+				min = d;
+				closest = p;	//Point of intersection
+				nearest = (*it);	//Intersecting object
+				// cout<<"yay"<<endl;
+			}
+			// cout << distance(l.ro,p)<<endl;
+		} catch(const char* msg){
+			// cout << msg << endl;
+		}
+	}
+
+	if(intersecting){
+		this->normal_ = (*nearest).normal(closest);
+		this->tri = nearest;
+		return closest;
+	} else {
+		throw "No intersection";
+	}
+
+	// throw "No intersection";
+}
+
+Point_3d Mesh::normal(Point_3d p){
+	normal_.normalize();
+	return this->normal_;
+}
+
 void Point_3d::normalize()
 {
 	float mag = pow((this->x),2) + pow((this->y),2) + pow((this->z),2);
@@ -245,9 +292,6 @@ Point_3d Sphere::normal(Point_3d p)
 
 Point_3d Triangle::normal(Point_3d p)
 {
-	// Point_3d side1 = (this->pt1).subtract(this->pt3);
-	// Point_3d side2 = (this->pt2).subtract(this->pt3);
-	// Point_3d nor = side1.cross(side2);
 	Point_3d nor(this->p.a, this->p.b, this->p.c);
 	nor.normalize();
 	return nor;

@@ -19,10 +19,6 @@ const int height = 250;
 int image_glob[2*height + 1][2*width + 1][3];
 int anti_alias[2*height + 2][2*width + 2][3];
 
-float distance(Point_3d p1, Point_3d p2){
-	return sqrt((p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y) + (p1.z - p2.z)*(p1.z - p2.z));
-}
-
 Color diffusion(Point_3d light, Color intensity, Point_3d normal, Color kd)
 {
 	return intensity.multiply(kd.multiply(abs(light.dot(normal))));
@@ -79,8 +75,10 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 		return Color(0,0,0);	
 	}
 
-
-
+	Point_3d normal_closest = (*nearest).normal(closest);
+	if((*nearest).type == MESH){
+		nearest = (*nearest).tri;
+	}
 	// cout<<closest<<"sgjhvj"<<endl;
 
 	Color diff(0,0,0);
@@ -91,7 +89,7 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 		// cout << typeid(*it).name() << endl;
 		if((*it)->type == LIGHT_POINT)
 		{	
-			// cout<<"c";
+			// cout<<"c"<<endl;
 			Point_3d direc = (*it)->location.subtract(closest);
 			direc.normalize();
 			Line light_ray(closest,direc);
@@ -108,6 +106,8 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 					Point_3d p = (*it2)->intersection(light_ray);
 					// cout<< p <<endl;
 					float d = distance(light_ray.ro,p);
+					// cout <<"D         " <<  d << endl;
+					// cout << light_ray.ro << p << endl;
 					if(d<min_int){
 						min_int = d;
 						closest_int = p;	//Point of intersection
@@ -121,12 +121,12 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 				}
 			}
 			float source_dist = distance(closest,(*it)->location);
+			// cout<<light_ray<<endl;
 			if(min_int + 0.001 < source_dist ){
-				// cout<<light_ray<<endl;
+				// cout<<"BLOCKED"<<endl;
 				// cout<<closest<<endl;
 				// cout<<min_int<<" "<<source_dist<<endl;
 				// cout<<closest_int << " " << (*nearest_int).type<<endl;
-				// cout<<"BLOCKED"<<endl;
 				continue;	// Light blocked
 			}
 
@@ -135,12 +135,12 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 			// Diffusion
 			Point_3d dir = direc;
 			// dir.normalize();
-			diff = diff.add(diffusion(dir,(*it)->intensity,(*nearest).normal(closest),(*nearest).kd));
+			diff = diff.add(diffusion(dir,(*it)->intensity,normal_closest,(*nearest).kd));
 
 			//Spectral
 			Point_3d view_vector = l.rd.multiply(-1);
 			view_vector.normalize();
-			spec = spec.add(specular(dir,(*it)->intensity,(*nearest).normal(closest),(*nearest).ks,(*nearest).n_spec,view_vector));
+			spec = spec.add(specular(dir,(*it)->intensity,normal_closest,(*nearest).ks,(*nearest).n_spec,view_vector));
 		}
 		else if((*it)->type == LIGHT_DIREC)
 		{
@@ -191,12 +191,12 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 			// Diffusion
 			Point_3d dir = direc;
 			// dir.normalize();
-			diff = diff.add(diffusion(dir,(*it)->intensity,(*nearest).normal(closest),(*nearest).kd));
+			diff = diff.add(diffusion(dir,(*it)->intensity,normal_closest,(*nearest).kd));
 
 			//Spectral
 			Point_3d view_vector = l.rd.multiply(-1);
 			view_vector.normalize();
-			spec = spec.add(specular(dir,(*it)->intensity,(*nearest).normal(closest),(*nearest).ks,(*nearest).n_spec,view_vector));
+			spec = spec.add(specular(dir,(*it)->intensity,normal_closest,(*nearest).ks,(*nearest).n_spec,view_vector));
 
 		}
 		else if((*it)->type == LIGHT_SPOT)
@@ -256,12 +256,12 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 			// Diffusion
 			Point_3d dir = direc;
 			// dir.normalize();
-			diff = diff.add(diffusion(dir,(*it)->intensity,(*nearest).normal(closest),(*nearest).kd));
+			diff = diff.add(diffusion(dir,(*it)->intensity,normal_closest,(*nearest).kd));
 
 			//Spectral
 			Point_3d view_vector = l.rd.multiply(-1);
 			view_vector.normalize();
-			spec = spec.add(specular(dir,(*it)->intensity,(*nearest).normal(closest),(*nearest).ks,(*nearest).n_spec,view_vector));
+			spec = spec.add(specular(dir,(*it)->intensity,normal_closest,(*nearest).ks,(*nearest).n_spec,view_vector));
 
 		}
 	
@@ -282,7 +282,7 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 		{
 			Point_3d incident = l.rd.multiply(-1);
 			incident.normalize();
-			Point_3d normal_at_poi = (*nearest).normal(closest);
+			Point_3d normal_at_poi = normal_closest;
 			if(incident.dot(normal_at_poi) < 0 )
 			{
 				normal_at_poi = normal_at_poi.multiply(-1);
@@ -305,7 +305,7 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 
 	Color trans(0,0,0);
 	// ADD TRANSMISSION COMP
-	if(depth <= MAX_DEPTH && (*nearest).type == SPHERE)
+	if(depth <= MAX_DEPTH && ((*nearest).type == SPHERE) || ((*nearest).type == QUADRIC))
 	{
 		if((*nearest).kt.r > 0.01 || (*nearest).kt.g > 0.01 || (*nearest).kt.b > 0.01)
 		{
@@ -313,7 +313,7 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 				// cout << "WHOOPIEE" << endl;
 			}
 			Point_3d incident = l.rd;
-			Point_3d normal_at_poi = (*nearest).normal(closest);
+			Point_3d normal_at_poi = normal_closest;
 			if(incident.dot(normal_at_poi) > 0 )
 			{
 				normal_at_poi = normal_at_poi.multiply(-1);
@@ -331,8 +331,6 @@ Color illumination(Line l, vector<Object*> objects, vector<Light*> sources, int 
 				trans_dirn.normalize();
 				Line transmitted(closest,trans_dirn);
 				trans = illumination(transmitted, objects, sources, depth+1,!inside);
-			} else {
-				cout << "daisy" << endl;
 			}
 		}
 	}
@@ -376,9 +374,16 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
     // cout<<camera<<"camera"<<endl;
     Point_3d eye_(0,0,-1*E);
 
+ //    for(std::vector<Object*>::iterator it = objects.begin() ; it != objects.end(); ++it){
+ //    	if((*it).type == MESH){
+	// 	    for(std::vector<Triangle*>::iterator it2 = (*it)->triangles.begin() ; it2 != this->triangles.end(); ++it2){
+	// 	    	objects.push_back(*it);
+	// 	    }
+	// 	}
+	// }
 
-    // int i = 21;
-    // int j = -125;
+    // int i = 99;
+    // int j = -115;
     // Point_3d ray = (eye_.subtract((Point_3d(i,j,0)))).multiply(-1);
     // cout<<ray<<endl;
     // ray = v_to_w(ray, camera, u,v,n);
@@ -455,7 +460,7 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
             // img << (temp.g<255?(int) temp.g : 255) << " ";
             // img << (temp.b<255?(int) temp.b : 255) << " ";
 
-            // if(temp.r < 50 && temp.g < 50 && temp.b < 50){
+            // if(temp.r < 60 && temp.g < 60 && temp.b < 60){
             // 	cout << i << " " << j << endl;
             // }
             // image_glob[((i+height)*width+(j+width))*3+0] = (int)temp.r;
@@ -540,7 +545,7 @@ int main(int argc, char **argv){
 	Color k2(0.7,0.7,0.7);
 	Color k4(0.4,0.4,0.4);
 	Color red(0.8,0.5,0.5);
-	Color yellow(0.4,0.7,0.7);
+	Color yellow(0.7,0.7,0.4);
 	Color pink(0.7,0.5,0.6);
 	Color green(0.3,0.5,0.7);
 	Color kall(1,1,1);
@@ -557,10 +562,29 @@ int main(int argc, char **argv){
 	Rectangle* box3 = new Rectangle(Point_3d(6000,8000,0),Point_3d(6000,7000,0),Point_3d(6000,7000,1000),Point_3d(6000,8000,1000),k1,k1,k1,k0,k0,2);
 	Rectangle* box4 = new Rectangle(Point_3d(7000,8000,0),Point_3d(7000,7000,0),Point_3d(7000,7000,1000),Point_3d(7000,8000,1000),k1,k1,k1,k0,k0,2);
 
-
 	Sphere* ball = new Sphere(Point_3d(5000,5000,5000), 500, k1,k1,k1,k0,k0,2,1);
-	Sphere* glass = new Sphere(Point_3d(7000,7000,3000), 500, yellow,yellow,yellow,ksmall,k0,2,2.6);
+	Sphere* glass = new Sphere(Point_3d(5000,5000,3000), 500, ksmall,ksmall,ksmall,k0,k2,2,2.6);
 
+	Triangle* t1= new Triangle(Point_3d(1000,6000,2000), Point_3d(1500,5500,0), Point_3d(1500,6500,0), yellow,yellow,yellow,k0,k0,2);
+	Triangle* t2= new Triangle(Point_3d(1000,6000,2000), Point_3d(1500,5500,0), Point_3d(500,6000,0),red,red,red,k0,k0,2);
+	Triangle* t3= new Triangle(Point_3d(1000,6000,2000), Point_3d(500,6000,0), Point_3d(1500,6500,0),green,green,green,k0,k0,2);
+	Mesh* pyramid = new Mesh();
+	(*pyramid).add(t1);
+	(*pyramid).add(t2);
+	(*pyramid).add(t3);
+
+	Triangle* t01= new Triangle(Point_3d(7000,7000,2000), Point_3d(6500,6500,0), Point_3d(7500,6500,0), yellow,yellow,yellow,k0,k0,2);
+	Triangle* t02= new Triangle(Point_3d(7000,7000,2000), Point_3d(6500,7500,0), Point_3d(7500,7500,0),red,red,red,k0,k0,2);
+	Triangle* t03= new Triangle(Point_3d(7000,7000,2000), Point_3d(6500,6500,0), Point_3d(6500,7500,0),green,green,green,k0,k0,2);
+	Triangle* t04= new Triangle(Point_3d(7000,7000,2000), Point_3d(7500,6500,0), Point_3d(7500,7500,0),green,green,green,k0,k0,2);
+	Mesh* sq_pyramid = new Mesh();
+	(*sq_pyramid).add(t01);
+	(*sq_pyramid).add(t02);
+	(*sq_pyramid).add(t03);
+	(*sq_pyramid).add(t04);
+
+	Rectangle* bottom1 = new Rectangle(Point_3d(0,0,0),Point_3d(0,5000,0),Point_3d(5000,5000,0),Point_3d(5000,0,0),red,red,red,k0,k0,2);
+	Rectangle* bottom2 = new Rectangle(Point_3d(5000,5000,0),Point_3d(5000,10000,0),Point_3d(10000,10000,0),Point_3d(10000,5000,0),red,red,red,k0,k0,2);
 	Rectangle* bottom = new Rectangle(Point_3d(0,0,0),Point_3d(0,10000,0),Point_3d(10000,10000,0),Point_3d(10000,0,0),red,red,red,k0,k0,2);
 	Rectangle* top = new Rectangle(Point_3d(10000,10000,10000),Point_3d(0,10000,10000),Point_3d(0,0,10000),Point_3d(10000,0,10000),k,k,k,k0,k0,2);
 	Rectangle* left = new Rectangle(Point_3d(0,0,0),Point_3d(0,0,10000),Point_3d(0,10000,10000),Point_3d(0,10000,0),k,k,k,k0,k0,2);
@@ -570,17 +594,16 @@ int main(int argc, char **argv){
 
 	Rectangle* mirror1 = new Rectangle(Point_3d(2000,9990,8000),Point_3d(8000,9990,8000),Point_3d(8000,9990,2000),Point_3d(2000,9990,2000),k0,k0,k0,k2,k2,2);
 	Rectangle* mirror2 = new Rectangle(Point_3d(3000,6000,0),Point_3d(3000,6000,3000),Point_3d(4000,4000,3000),Point_3d(4000,4000,0),k0,k0,k0,k2,k2,2);
+	Quadric* ellipsoid = new Quadric(4,1,1,0,0,0,-40000,-10000,-10000,149750000,k1,k1,k1,k0,k0,2);
+	Quadric* glass_ell = new Quadric(4,1,1,0,0,0,-40000,-10000,-10000,149750000,yellow,yellow,yellow,ksmall,k2,2);
+
 
 	Point_source* light = new Point_source(Point_3d(5000,5000,10000), Color(255,255,255));
-	Point_source* light2 = new Point_source(Point_3d(5000,9800,5000), Color(255,255,255));
+	Point_source* light2 = new Point_source(Point_3d(5000,100,5000), Color(255,255,255));
 	Point_source* light3 = new Point_source(Point_3d(9800,5000,8000), Color(255,255,255));
 	Point_source* light4 = new Point_source(Point_3d(200,5000,8000), Color(255,255,0));
-
 	Point_3d sphere_centre(5000,5000,2000);
 	Spotlight* light5 = new Spotlight(Point_3d(9990,5000,8000), sphere_centre.subtract(Point_3d(9990,5000,8000)), 0.97 ,Color(255,255,0));
-
-	Quadric* ellipsoid = new Quadric(4,1,1,0,0,0,-40000,-10000,-10000,149750000,k1,k1,k1,k0,k0,2);
-
 	Direction_source* sun = new Direction_source(Point_3d(10,-5,-20),Color(255,255,255)); 
 
 	std::vector<Object*> objects;
@@ -599,26 +622,34 @@ int main(int argc, char **argv){
 	// objects.push_back(box3);
 	// objects.push_back(box4);
 	// objects.push_back(ellipsoid);
-
-	objects.push_back(bottom);
-	// // objects.push_back(top);
-	// objects.push_back(front);
-	// objects.push_back(back);
-	// objects.push_back(left);
-	// objects.push_back(right);
+	// objects.push_back(glass_ell);
+	// objects.push_back(pyramid);
+	// objects.push_back(sq_pyramid);
+	// objects.push_back(bottom);
+	objects.push_back(bottom1);
+	objects.push_back(bottom2);
+	objects.push_back(top);
+	objects.push_back(front);
+	objects.push_back(back);
+	objects.push_back(left);
+	objects.push_back(right);
+	// objects.push_back(t01);
+	// objects.push_back(t02);
+	// objects.push_back(t03);
+	// objects.push_back(t04);
 
 	std::vector<Light*> lights;
 	// lights.push_back(light);
 	// lights.push_back(light2);
-	// lights.push_back(light3);
+	lights.push_back(light3);
 	// lights.push_back(light4);
 	// lights.push_back(light5);
-	lights.push_back(sun);
+	// lights.push_back(sun);
 
 	// cout<<"spot"<<light5->type<<" "<<light5->direction<<" "<<light5->intensity<<" "<<light5->location<<" "<<light5->dot_min<<endl;
 
-	Point_3d eye(1000,1000,9500);
-	Point_3d dirn = eye.subtract(Point_3d(10000,10000,0)).multiply(-1);
+	Point_3d eye(5000,1000,9500);
+	Point_3d dirn = eye.subtract(Point_3d(5000,10000,0)).multiply(-1);
 	dirn.normalize();
 	
     // image_glob = new unsigned int [(2*height+1)*(2*width+1)*3];
