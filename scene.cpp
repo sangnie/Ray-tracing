@@ -524,151 +524,151 @@ void click(vector<Object*> objects, vector<Light*> sources, Point_3d eye, float 
     img.close();
 }
 
-int main(int argc, char **argv){
-	// Point_3d eye(0,0,0);
-	// Point_3d dirn(0,0,1.0);
-	// Point_3d pt1(2,0,1);
-	// Point_3d pt2(-2,0,1);
-	// Point_3d pt3(0,4,1);
+// int main(int argc, char **argv){
+// 	// Point_3d eye(0,0,0);
+// 	// Point_3d dirn(0,0,1.0);
+// 	// Point_3d pt1(2,0,1);
+// 	// Point_3d pt2(-2,0,1);
+// 	// Point_3d pt3(0,4,1);
 
-	// Triangle* t = new Triangle(pt1,pt2,pt3);
-	// Plane pl = t->p;
-	// Sphere* s = new Sphere(pt1,0.1);
+// 	// Triangle* t = new Triangle(pt1,pt2,pt3);
+// 	// Plane pl = t->p;
+// 	// Sphere* s = new Sphere(pt1,0.1);
 
-	// Line l(eye,dirn);
-	// Point_3d p = closest_intersection(l,objects);
-	// cout << p.x << " " << p.y << " " << p.z << endl;
+// 	// Line l(eye,dirn);
+// 	// Point_3d p = closest_intersection(l,objects);
+// 	// cout << p.x << " " << p.y << " " << p.z << endl;
 
-	Color k(0.5,0.5,0.5);
-	Color k0(0,0,0);
-	Color k1(0.7,0.5,0.7);
-	Color k2(0.7,0.7,0.7);
-	Color k4(0.4,0.4,0.4);
-	Color red(0.8,0.5,0.5);
-	Color yellow(0.7,0.7,0.4);
-	Color pink(0.7,0.5,0.6);
-	Color green(0.3,0.5,0.7);
-	Color kall(1,1,1);
-	Color ksmall(0.2,0.2,0.2);
-	Plane* wall1 = new Plane(1,0,0,0,yellow,yellow,yellow,k0,k0,2);
-	Plane* wall2 = new Plane(0,1,0,0,pink,pink,pink,k0,k0,2);
-	Plane* wall3 = new Plane(0,0,1,0,green,green,green,k0,k0,2);
-	Plane* wall4 = new Plane(1,0,0,-10000,yellow,yellow,yellow,k0,k0,2);
-	Plane* wall5 = new Plane(0,1,0,-10000,pink,pink,pink,k0,k0,2);
-	Plane* wall6 = new Plane(0,0,1,-10000,green,green,green,k0,k0,2);
+// 	Color k(0.5,0.5,0.5);
+// 	Color k0(0,0,0);
+// 	Color k1(0.7,0.5,0.7);
+// 	Color k2(0.7,0.7,0.7);
+// 	Color k4(0.4,0.4,0.4);
+// 	Color red(0.8,0.5,0.5);
+// 	Color yellow(0.7,0.7,0.4);
+// 	Color pink(0.7,0.5,0.6);
+// 	Color green(0.3,0.5,0.7);
+// 	Color kall(1,1,1);
+// 	Color ksmall(0.2,0.2,0.2);
+// 	Plane* wall1 = new Plane(1,0,0,0,yellow,yellow,yellow,k0,k0,2);
+// 	Plane* wall2 = new Plane(0,1,0,0,pink,pink,pink,k0,k0,2);
+// 	Plane* wall3 = new Plane(0,0,1,0,green,green,green,k0,k0,2);
+// 	Plane* wall4 = new Plane(1,0,0,-10000,yellow,yellow,yellow,k0,k0,2);
+// 	Plane* wall5 = new Plane(0,1,0,-10000,pink,pink,pink,k0,k0,2);
+// 	Plane* wall6 = new Plane(0,0,1,-10000,green,green,green,k0,k0,2);
 
-	Rectangle* box1 = new Rectangle(Point_3d(6000,8000,0),Point_3d(7000,8000,0),Point_3d(7000,8000,1000),Point_3d(6000,8000,1000),k1,k1,k1,k0,k0,2);
-	Rectangle* box2 = new Rectangle(Point_3d(6000,7000,0),Point_3d(7000,7000,0),Point_3d(7000,7000,1000),Point_3d(6000,7000,1000),k1,k1,k1,k0,k0,2);
-	Rectangle* box3 = new Rectangle(Point_3d(6000,8000,0),Point_3d(6000,7000,0),Point_3d(6000,7000,1000),Point_3d(6000,8000,1000),k1,k1,k1,k0,k0,2);
-	Rectangle* box4 = new Rectangle(Point_3d(7000,8000,0),Point_3d(7000,7000,0),Point_3d(7000,7000,1000),Point_3d(7000,8000,1000),k1,k1,k1,k0,k0,2);
+// 	Rectangle* box1 = new Rectangle(Point_3d(6000,8000,0),Point_3d(7000,8000,0),Point_3d(7000,8000,1000),Point_3d(6000,8000,1000),k1,k1,k1,k0,k0,2);
+// 	Rectangle* box2 = new Rectangle(Point_3d(6000,7000,0),Point_3d(7000,7000,0),Point_3d(7000,7000,1000),Point_3d(6000,7000,1000),k1,k1,k1,k0,k0,2);
+// 	Rectangle* box3 = new Rectangle(Point_3d(6000,8000,0),Point_3d(6000,7000,0),Point_3d(6000,7000,1000),Point_3d(6000,8000,1000),k1,k1,k1,k0,k0,2);
+// 	Rectangle* box4 = new Rectangle(Point_3d(7000,8000,0),Point_3d(7000,7000,0),Point_3d(7000,7000,1000),Point_3d(7000,8000,1000),k1,k1,k1,k0,k0,2);
 
-	Sphere* ball = new Sphere(Point_3d(5000,5000,5000), 500, k1,k1,k1,k0,k0,2,1);
-	Sphere* glass = new Sphere(Point_3d(5000,5000,3000), 500, ksmall,ksmall,ksmall,k0,k2,2,2.6);
+// 	Sphere* ball = new Sphere(Point_3d(5000,5000,5000), 500, k1,k1,k1,k0,k0,2,1);
+// 	Sphere* glass = new Sphere(Point_3d(5000,5000,3000), 500, ksmall,ksmall,ksmall,k0,k2,2,2.6);
 
-	Triangle* t1= new Triangle(Point_3d(1000,6000,2000), Point_3d(1500,5500,0), Point_3d(1500,6500,0), yellow,yellow,yellow,k0,k0,2);
-	Triangle* t2= new Triangle(Point_3d(1000,6000,2000), Point_3d(1500,5500,0), Point_3d(500,6000,0),red,red,red,k0,k0,2);
-	Triangle* t3= new Triangle(Point_3d(1000,6000,2000), Point_3d(500,6000,0), Point_3d(1500,6500,0),green,green,green,k0,k0,2);
-	Mesh* pyramid = new Mesh();
-	(*pyramid).add(t1);
-	(*pyramid).add(t2);
-	(*pyramid).add(t3);
+// 	Triangle* t1= new Triangle(Point_3d(1000,6000,2000), Point_3d(1500,5500,0), Point_3d(1500,6500,0), yellow,yellow,yellow,k0,k0,2);
+// 	Triangle* t2= new Triangle(Point_3d(1000,6000,2000), Point_3d(1500,5500,0), Point_3d(500,6000,0),red,red,red,k0,k0,2);
+// 	Triangle* t3= new Triangle(Point_3d(1000,6000,2000), Point_3d(500,6000,0), Point_3d(1500,6500,0),green,green,green,k0,k0,2);
+// 	Mesh* pyramid = new Mesh();
+// 	(*pyramid).add(t1);
+// 	(*pyramid).add(t2);
+// 	(*pyramid).add(t3);
 
-	Triangle* t01= new Triangle(Point_3d(7000,7000,2000), Point_3d(6500,6500,0), Point_3d(7500,6500,0), yellow,yellow,yellow,k0,k0,2);
-	Triangle* t02= new Triangle(Point_3d(7000,7000,2000), Point_3d(6500,7500,0), Point_3d(7500,7500,0),red,red,red,k0,k0,2);
-	Triangle* t03= new Triangle(Point_3d(7000,7000,2000), Point_3d(6500,6500,0), Point_3d(6500,7500,0),green,green,green,k0,k0,2);
-	Triangle* t04= new Triangle(Point_3d(7000,7000,2000), Point_3d(7500,6500,0), Point_3d(7500,7500,0),green,green,green,k0,k0,2);
-	Mesh* sq_pyramid = new Mesh();
-	(*sq_pyramid).add(t01);
-	(*sq_pyramid).add(t02);
-	(*sq_pyramid).add(t03);
-	(*sq_pyramid).add(t04);
+// 	Triangle* t01= new Triangle(Point_3d(7000,7000,2000), Point_3d(6500,6500,0), Point_3d(7500,6500,0), yellow,yellow,yellow,k0,k0,2);
+// 	Triangle* t02= new Triangle(Point_3d(7000,7000,2000), Point_3d(6500,7500,0), Point_3d(7500,7500,0),red,red,red,k0,k0,2);
+// 	Triangle* t03= new Triangle(Point_3d(7000,7000,2000), Point_3d(6500,6500,0), Point_3d(6500,7500,0),green,green,green,k0,k0,2);
+// 	Triangle* t04= new Triangle(Point_3d(7000,7000,2000), Point_3d(7500,6500,0), Point_3d(7500,7500,0),green,green,green,k0,k0,2);
+// 	Mesh* sq_pyramid = new Mesh();
+// 	(*sq_pyramid).add(t01);
+// 	(*sq_pyramid).add(t02);
+// 	(*sq_pyramid).add(t03);
+// 	(*sq_pyramid).add(t04);
 
-	Rectangle* bottom1 = new Rectangle(Point_3d(0,0,0),Point_3d(0,5000,0),Point_3d(5000,5000,0),Point_3d(5000,0,0),red,red,red,k0,k0,2);
-	Rectangle* bottom2 = new Rectangle(Point_3d(5000,5000,0),Point_3d(5000,10000,0),Point_3d(10000,10000,0),Point_3d(10000,5000,0),red,red,red,k0,k0,2);
-	Rectangle* bottom = new Rectangle(Point_3d(0,0,0),Point_3d(0,10000,0),Point_3d(10000,10000,0),Point_3d(10000,0,0),red,red,red,k0,k0,2);
-	Rectangle* top = new Rectangle(Point_3d(10000,10000,10000),Point_3d(0,10000,10000),Point_3d(0,0,10000),Point_3d(10000,0,10000),k,k,k,k0,k0,2);
-	Rectangle* left = new Rectangle(Point_3d(0,0,0),Point_3d(0,0,10000),Point_3d(0,10000,10000),Point_3d(0,10000,0),k,k,k,k0,k0,2);
-	Rectangle* right = new Rectangle(Point_3d(10000,0,0),Point_3d(10000,10000,0),Point_3d(10000,10000,10000),Point_3d(10000,0,10000),k,k,k,k0,k0,2);
-	Rectangle* front = new Rectangle(Point_3d(0,10000,0),Point_3d(0,10000,10000),Point_3d(10000,10000,10000),Point_3d(10000,10000,0),k,k,k,k0,k0,2);
-	Rectangle* back = new Rectangle(Point_3d(0,0,10000),Point_3d(0,0,0),Point_3d(10000,0,0),Point_3d(10000,0,10000),k,k,k,k0,k0,2);
+// 	Rectangle* bottom1 = new Rectangle(Point_3d(0,0,0),Point_3d(0,5000,0),Point_3d(5000,5000,0),Point_3d(5000,0,0),red,red,red,k0,k0,2);
+// 	Rectangle* bottom2 = new Rectangle(Point_3d(5000,5000,0),Point_3d(5000,10000,0),Point_3d(10000,10000,0),Point_3d(10000,5000,0),red,red,red,k0,k0,2);
+// 	Rectangle* bottom = new Rectangle(Point_3d(0,0,0),Point_3d(0,10000,0),Point_3d(10000,10000,0),Point_3d(10000,0,0),red,red,red,k0,k0,2);
+// 	Rectangle* top = new Rectangle(Point_3d(10000,10000,10000),Point_3d(0,10000,10000),Point_3d(0,0,10000),Point_3d(10000,0,10000),k,k,k,k0,k0,2);
+// 	Rectangle* left = new Rectangle(Point_3d(0,0,0),Point_3d(0,0,10000),Point_3d(0,10000,10000),Point_3d(0,10000,0),k,k,k,k0,k0,2);
+// 	Rectangle* right = new Rectangle(Point_3d(10000,0,0),Point_3d(10000,10000,0),Point_3d(10000,10000,10000),Point_3d(10000,0,10000),k,k,k,k0,k0,2);
+// 	Rectangle* front = new Rectangle(Point_3d(0,10000,0),Point_3d(0,10000,10000),Point_3d(10000,10000,10000),Point_3d(10000,10000,0),k,k,k,k0,k0,2);
+// 	Rectangle* back = new Rectangle(Point_3d(0,0,10000),Point_3d(0,0,0),Point_3d(10000,0,0),Point_3d(10000,0,10000),k,k,k,k0,k0,2);
 
-	Rectangle* mirror1 = new Rectangle(Point_3d(2000,9990,8000),Point_3d(8000,9990,8000),Point_3d(8000,9990,2000),Point_3d(2000,9990,2000),k0,k0,k0,k2,k2,2);
-	Rectangle* mirror2 = new Rectangle(Point_3d(3000,6000,0),Point_3d(3000,6000,3000),Point_3d(4000,4000,3000),Point_3d(4000,4000,0),k0,k0,k0,k2,k2,2);
-	Quadric* ellipsoid = new Quadric(4,1,1,0,0,0,-40000,-10000,-10000,149750000,k1,k1,k1,k0,k0,2);
-	Quadric* glass_ell = new Quadric(4,1,1,0,0,0,-40000,-10000,-10000,149750000,yellow,yellow,yellow,ksmall,k2,2);
+// 	Rectangle* mirror1 = new Rectangle(Point_3d(2000,9990,8000),Point_3d(8000,9990,8000),Point_3d(8000,9990,2000),Point_3d(2000,9990,2000),k0,k0,k0,k2,k2,2);
+// 	Rectangle* mirror2 = new Rectangle(Point_3d(3000,6000,0),Point_3d(3000,6000,3000),Point_3d(4000,4000,3000),Point_3d(4000,4000,0),k0,k0,k0,k2,k2,2);
+// 	Quadric* ellipsoid = new Quadric(4,1,1,0,0,0,-40000,-10000,-10000,149750000,k1,k1,k1,k0,k0,2);
+// 	Quadric* glass_ell = new Quadric(4,1,1,0,0,0,-40000,-10000,-10000,149750000,yellow,yellow,yellow,ksmall,k2,2);
 
 
-	Point_source* light = new Point_source(Point_3d(5000,5000,10000), Color(255,255,255));
-	Point_source* light2 = new Point_source(Point_3d(5000,100,5000), Color(255,255,255));
-	Point_source* light3 = new Point_source(Point_3d(9800,5000,8000), Color(255,255,255));
-	Point_source* light4 = new Point_source(Point_3d(200,5000,8000), Color(255,255,0));
-	Point_3d sphere_centre(5000,5000,2000);
-	Spotlight* light5 = new Spotlight(Point_3d(9990,5000,8000), sphere_centre.subtract(Point_3d(9990,5000,8000)), 0.97 ,Color(255,255,0));
-	Direction_source* sun = new Direction_source(Point_3d(10,-5,-20),Color(255,255,255)); 
+// 	Point_source* light = new Point_source(Point_3d(5000,5000,10000), Color(255,255,255));
+// 	Point_source* light2 = new Point_source(Point_3d(5000,100,5000), Color(255,255,255));
+// 	Point_source* light3 = new Point_source(Point_3d(9800,5000,8000), Color(255,255,255));
+// 	Point_source* light4 = new Point_source(Point_3d(200,5000,8000), Color(255,255,0));
+// 	Point_3d sphere_centre(5000,5000,2000);
+// 	Spotlight* light5 = new Spotlight(Point_3d(9990,5000,8000), sphere_centre.subtract(Point_3d(9990,5000,8000)), 0.97 ,Color(255,255,0));
+// 	Direction_source* sun = new Direction_source(Point_3d(10,-5,-20),Color(255,255,255)); 
 
-	std::vector<Object*> objects;
-	// objects.push_back(wall1);
-	// objects.push_back(wall2);
-	// objects.push_back(wall3);
-	// objects.push_back(wall4);
-	// objects.push_back(wall5);
-	// objects.push_back(wall6);
-	// objects.push_back(ball);
-	objects.push_back(glass);
-	// objects.push_back(mirror1);
-	// objects.push_back(mirror2);
-	// objects.push_back(box1);
-	// objects.push_back(box2);
-	// objects.push_back(box3);
-	// objects.push_back(box4);
-	// objects.push_back(ellipsoid);
-	// objects.push_back(glass_ell);
-	// objects.push_back(pyramid);
-	// objects.push_back(sq_pyramid);
-	// objects.push_back(bottom);
-	objects.push_back(bottom1);
-	objects.push_back(bottom2);
-	objects.push_back(top);
-	objects.push_back(front);
-	objects.push_back(back);
-	objects.push_back(left);
-	objects.push_back(right);
-	// objects.push_back(t01);
-	// objects.push_back(t02);
-	// objects.push_back(t03);
-	// objects.push_back(t04);
+// 	std::vector<Object*> objects;
+// 	// objects.push_back(wall1);
+// 	// objects.push_back(wall2);
+// 	// objects.push_back(wall3);
+// 	// objects.push_back(wall4);
+// 	// objects.push_back(wall5);
+// 	// objects.push_back(wall6);
+// 	// objects.push_back(ball);
+// 	objects.push_back(glass);
+// 	// objects.push_back(mirror1);
+// 	// objects.push_back(mirror2);
+// 	// objects.push_back(box1);
+// 	// objects.push_back(box2);
+// 	// objects.push_back(box3);
+// 	// objects.push_back(box4);
+// 	// objects.push_back(ellipsoid);
+// 	// objects.push_back(glass_ell);
+// 	// objects.push_back(pyramid);
+// 	// objects.push_back(sq_pyramid);
+// 	// objects.push_back(bottom);
+// 	objects.push_back(bottom1);
+// 	objects.push_back(bottom2);
+// 	objects.push_back(top);
+// 	objects.push_back(front);
+// 	objects.push_back(back);
+// 	objects.push_back(left);
+// 	objects.push_back(right);
+// 	// objects.push_back(t01);
+// 	// objects.push_back(t02);
+// 	// objects.push_back(t03);
+// 	// objects.push_back(t04);
 
-	std::vector<Light*> lights;
-	// lights.push_back(light);
-	// lights.push_back(light2);
-	lights.push_back(light3);
-	// lights.push_back(light4);
-	// lights.push_back(light5);
-	// lights.push_back(sun);
+// 	std::vector<Light*> lights;
+// 	// lights.push_back(light);
+// 	// lights.push_back(light2);
+// 	lights.push_back(light3);
+// 	// lights.push_back(light4);
+// 	// lights.push_back(light5);
+// 	// lights.push_back(sun);
 
-	// cout<<"spot"<<light5->type<<" "<<light5->direction<<" "<<light5->intensity<<" "<<light5->location<<" "<<light5->dot_min<<endl;
+// 	// cout<<"spot"<<light5->type<<" "<<light5->direction<<" "<<light5->intensity<<" "<<light5->location<<" "<<light5->dot_min<<endl;
 
-	Point_3d eye(5000,1000,9500);
-	Point_3d dirn = eye.subtract(Point_3d(5000,10000,0)).multiply(-1);
-	dirn.normalize();
+// 	Point_3d eye(5000,1000,9500);
+// 	Point_3d dirn = eye.subtract(Point_3d(5000,10000,0)).multiply(-1);
+// 	dirn.normalize();
 	
-    // image_glob = new unsigned int [(2*height+1)*(2*width+1)*3];
+//     // image_glob = new unsigned int [(2*height+1)*(2*width+1)*3];
 
-	click(objects, lights, eye, 500, dirn);
+// 	click(objects, lights, eye, 500, dirn);
 	
-	// cout<<"YAYYY"<<endl;
+// 	// cout<<"YAYYY"<<endl;
 	
-	// glutInit( &argc, argv );
- //    glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE );
- //    glutInitWindowSize( 2*width+1, 2*height+1 );
- //    glutCreateWindow( "GLUT" );
- //    glutDisplayFunc( display );
- //    glutMainLoop();
+// 	// glutInit( &argc, argv );
+//  //    glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE );
+//  //    glutInitWindowSize( 2*width+1, 2*height+1 );
+//  //    glutCreateWindow( "GLUT" );
+//  //    glutDisplayFunc( display );
+//  //    glutMainLoop();
 
-	// cout<<dirn<<endl;
+// 	// cout<<dirn<<endl;
 
-	return 0;
-}
+// 	return 0;
+// }
 
 // void display()
 // {
@@ -703,131 +703,132 @@ int main(int argc, char **argv){
 //     glutSwapBuffers();
 // }
 
-// int main(int argc, char **argv){
+int main(int argc, char **argv){
 	
-// 	ifstream ifs;
-// 	ifs.open(argv[1]);
+	ifstream ifs;
+	ifs.open(argv[1]);
 
-// 	if (!ifs) {
-//         cout << "Unable to open file";
-//         exit(1); // terminate with error
-//     }
+	if (!ifs) {
+        cout << "Unable to open file";
+        exit(1); // terminate with error
+    }
 
-//     Point_3d eye;
-//     float E;
-//     Point_3d n;
-//     ifs >> eye.x >> eye.y >> eye.z >> E >> n.x >> n.y >> n.z;
-//     n.normalize();
+    Point_3d eye;
+    float E;
+    Point_3d n;
+    ifs >> eye.x >> eye.y >> eye.z >> E >> n.x >> n.y >> n.z;
+    n.normalize();
 
-// 	std::vector<Object*> objects;
-// 	std::vector<Light*> lights;
+	std::vector<Object*> objects;
+	std::vector<Light*> lights;
 	
-//     while(!ifs.eof()){
-//     	string type;
-//     	ifs >> type;
+    while(!ifs.eof()){
+    	string type;
+    	ifs >> type;
 
-//     	if(type == "POINT SOURCE"){
-//     		Color intn;
-//     		Point_3d loc;
-//     		ifs >> intn.r >> intn.g >> intn.b >> loc.x >> loc.y >> loc.z;
-//     		lights.push_back(new Point_source(loc, intn));
-//     	}
-//     	if(type == "DIRECTION SOURCE"){
-//     		Color intn;
-//     		Point_3d dirn;
-//     		ifs >> intn.r >> intn.g >> intn.b >> dirn.x >> dirn.y >> dirn.z;
-//     		dirn.normalize();
-//     		lights.push_back(new Direction_source(dirn, intn));	
-//     	}
-//     	if(type == "SPHERE"){
-//     		Point_3d centre;
-//     		float r;
-//     		Color ks;
-//     		Color kd;
-//     		Color ka;
-//     		Color kr;
-//     		Color kt;
-//     		int n_spec;
-//     		ifs >> centre.x >> centre.y >> centre.z >> r;
-//     		ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b >> n_spec; 
-//     		objects.push_back(new Sphere(centre,r,ks, kd, ka, kr, kt , n_spec));
-//     	}
-//     	if(type == "TRIANGLE"){
-//     		Point_3d p1;
-//     		Point_3d p2;
-//     		Point_3d p3;
-//     		Color ks;
-//     		Color kd;
-//     		Color ka;
-//     		Color kr;
-//     		Color kt;
-//     		int n_spec;
-//     		ifs >> p1.x>>p1.y>>p1.z;
-//     		ifs >> p2.x>>p2.y>>p2.z;
-//     		ifs >> p3.x>>p3.y>>p3.z;
-//     		ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b >> n_spec; 
-//     		objects.push_back(new Triangle(p1,p2,p3,ks, kd, ka, kr, kt , n_spec));
-//     	}
-//     	if(type == "PLANE"){
-//     		float a,b,c,d;
-//     		Color ks;
-//     		Color kd;
-//     		Color ka;
-//     		Color kr;
-//     		Color kt;
-//     		int n_spec;
-//     		ifs >> a >> b >> c >> d;
-//     		ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b >> n_spec; 
-//     		objects.push_back(new Plane(a,b,c,d,ks, kd, ka, kr, kt , n_spec));
-//     	}
-//     	if(type == "RECTANGLE"){
-//     		Point_3d p1;
-//     		Point_3d p2;
-//     		Point_3d p3;
-//     		Point_3d p4;    	
-//     		Color ks;
-//     		Color kd;
-//     		Color ka;
-//     		Color kr;
-//     		Color kt;
-//     		int n_spec;
-//     		ifs >> p1.x>>p1.y>>p1.z;
-//     		ifs >> p2.x>>p2.y>>p2.z;
-//     		ifs >> p3.x>>p3.y>>p3.z;
-//     		ifs >> p4.x>>p4.y>>p4.z;
-//     		ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b >> n_spec; 
-//     		objects.push_back(new Rectangle(p1,p2,p3,p4,ks, kd, ka, kr, kt , n_spec));
-//     	}
-//     	if(type == "QUADRIC"){
-//     		float a,b,c,de,f,g,h,i,j;
-//     		Color ks;
-//     		Color kd;
-//     		Color ka;
-//     		Color kr;
-//     		Color kt;
-//     		int n_spec;
-//     		ifs >> a >> b >> c >> d >>e>>f>>g>>h>>i>>j;
-//     		ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b >> n_spec; 
-//     		Quadric(a, b, c, d, e, f, g, h, i, j, ks, kd, ka, kr,kt,n_spec){
-//     	}
-//     	if(type == "CIRCLE"){
-//     		Point_3d centre;
-//     		float r;
-//     		Plane p;
-//     		Color ks;
-//     		Color kd;
-//     		Color ka;
-//     		Color kr;
-//     		Color kt;
-//     		int n_spec;
-//     		ifs >> centre.x >> centre.y >> centre.z >> r;
-//     		ifs >> p.a >> p.b >> p.c >> p.d;
-//     		ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b>>n_spec;
-//     		objects.push_back(new Circle(centre,r,p,ks, kd, ka, kr, kt , n_spec)); 
-//     	}
-//     }
+    	if(type == "POINT_SOURCE"){
+    		Color intn;
+    		Point_3d loc;
+    		ifs >> intn.r >> intn.g >> intn.b >> loc.x >> loc.y >> loc.z;
+    		lights.push_back(new Point_source(loc, intn));
+    	}
+    	if(type == "DIRECTION_SOURCE"){
+    		Color intn;
+    		Point_3d dirn;
+    		ifs >> intn.r >> intn.g >> intn.b >> dirn.x >> dirn.y >> dirn.z;
+    		dirn.normalize();
+    		lights.push_back(new Direction_source(dirn, intn));	
+    	}
+    	if(type == "SPHERE"){
+    		Point_3d centre;
+    		float r;
+    		Color ks;
+    		Color kd;
+    		Color ka;
+    		Color kr;
+    		Color kt;
+    		int n_spec;
+    		int index;
+    		ifs >> centre.x >> centre.y >> centre.z >> r;
+    		ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b >> n_spec >> index; 
+    		objects.push_back(new Sphere(centre,r,ks, kd, ka, kr, kt , n_spec, index));
+    	}
+    	if(type == "TRIANGLE"){
+    		Point_3d p1;
+    		Point_3d p2;
+    		Point_3d p3;
+    		Color ks;
+    		Color kd;
+    		Color ka;
+    		Color kr;
+    		Color kt;
+    		int n_spec;
+    		ifs >> p1.x>>p1.y>>p1.z;
+    		ifs >> p2.x>>p2.y>>p2.z;
+    		ifs >> p3.x>>p3.y>>p3.z;
+    		ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b >> n_spec; 
+    		objects.push_back(new Triangle(p1,p2,p3,ks, kd, ka, kr, kt , n_spec));
+    	}
+    	if(type == "PLANE"){
+    		float a,b,c,d;
+    		Color ks;
+    		Color kd;
+    		Color ka;
+    		Color kr;
+    		Color kt;
+    		int n_spec;
+    		ifs >> a >> b >> c >> d;
+    		ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b >> n_spec; 
+    		objects.push_back(new Plane(a,b,c,d,ks, kd, ka, kr, kt , n_spec));
+    	}
+    	if(type == "RECTANGLE"){
+    		Point_3d p1;
+    		Point_3d p2;
+    		Point_3d p3;
+    		Point_3d p4;    	
+    		Color ks;
+    		Color kd;
+    		Color ka;
+    		Color kr;
+    		Color kt;
+    		int n_spec;
+    		ifs >> p1.x>>p1.y>>p1.z;
+    		ifs >> p2.x>>p2.y>>p2.z;
+    		ifs >> p3.x>>p3.y>>p3.z;
+    		ifs >> p4.x>>p4.y>>p4.z;
+    		ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b >> n_spec; 
+    		objects.push_back(new Rectangle(p1,p2,p3,p4,ks, kd, ka, kr, kt , n_spec));
+    	}
+    	if(type == "QUADRIC"){
+    		float a,b,c,d,e,f,g,h,i,j;
+    		Color ks;
+    		Color kd;
+    		Color ka;
+    		Color kr;
+    		Color kt;
+    		int n_spec;
+    		ifs >> a >> b >> c >> d >>e>>f>>g>>h>>i>>j;
+    		ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b >> n_spec; 
+    		Quadric(a, b, c, d, e, f, g, h, i, j, ks, kd, ka, kr,kt,n_spec);
+    	}
+    	if(type == "CIRCLE"){
+    		Point_3d centre;
+    		float r;
+    		Plane p;
+    		Color ks;
+    		Color kd;
+    		Color ka;
+    		Color kr;
+    		Color kt;
+    		int n_spec;
+    		ifs >> centre.x >> centre.y >> centre.z >> r;
+    		ifs >> p.a >> p.b >> p.c >> p.d;
+    		ifs >> ks.r >> ks.g >> ks.b >> kd.r >> kd.g >> kd.b >> ka.r >> ka.g >> ka.b >> kr.r >> kr.g >> kr.b >> kt.r >> kt.g >> kt.b>>n_spec;
+    		objects.push_back(new Circle(centre,r,p,ks, kd, ka, kr, kt , n_spec)); 
+    	}
+    }
 
-//     click(objects, lights, eye, E, n);
+    click(objects, lights, eye, E, n);
 
-// 	return 0;	
-// }
+	return 0;	
+}
